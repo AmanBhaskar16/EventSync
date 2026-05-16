@@ -1,71 +1,70 @@
-import Link from "next/link";
+// src/app/page.tsx
+// URL: /
+// Landing page — hero, features, event types, role cards, CTA.
+
+import Link                 from "next/link";
 import {
-  CalendarCheck, Users, BarChart3, Shield,
-  ArrowRight, Sparkles, Package, FileText,
-  Star
+  CalendarCheck, ArrowRight, Sparkles,
+  Users, BarChart3, Shield, Package, FileText, CheckCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/misc";
+import { Button }           from "@/components/ui/button";
+import { Badge }            from "@/components/ui/badge";
 
 const FEATURES = [
   {
-    icon: CalendarCheck,
+    icon:  CalendarCheck,
     title: "Visual Event Builder",
-    desc: "Drag-and-drop timeline canvas to design every element of your event with live budget tracking.",
-    color: "text-primary bg-primary/10",
+    desc:  "Drag-and-drop timeline to design every detail with live budget tracking.",
+    color: "bg-primary/10 text-primary",
   },
   {
-    icon: Users,
+    icon:  Users,
     title: "Verified Vendor Network",
-    desc: "2,400+ KYC-verified vendors across 16 categories — catering, decor, photography, and more.",
-    color: "text-chart-2 bg-chart-2/10",
+    desc:  "2,400+ KYC-verified vendors across 17 categories.",
+    color: "bg-blue-100 text-blue-700",
   },
   {
-    icon: Package,
+    icon:  Package,
     title: "Fractional Inventory",
-    desc: "Book exactly what you need. Our availability engine tracks partial inventory across concurrent events.",
-    color: "text-chart-3 bg-chart-3/10",
+    desc:  "Book exactly what you need — our engine prevents double-bookings.",
+    color: "bg-green-100 text-green-700",
   },
   {
-    icon: BarChart3,
+    icon:  BarChart3,
     title: "Business Intelligence",
-    desc: "Real-time dashboards showing revenue, net profit per event, staff costs, and expense breakdowns.",
-    color: "text-chart-4 bg-chart-4/10",
+    desc:  "Real-time revenue, net profit per event, staff and expense breakdowns.",
+    color: "bg-amber-100 text-amber-700",
   },
   {
-    icon: FileText,
+    icon:  FileText,
     title: "GST Document Engine",
-    desc: "Auto-generate GST-compliant invoices, quotations, service agreements, and delivery challans.",
-    color: "text-chart-5 bg-chart-5/10",
+    desc:  "Auto-generate GST-compliant invoices, quotations, and service agreements.",
+    color: "bg-purple-100 text-purple-700",
   },
   {
-    icon: Shield,
-    title: "Escrow & Milestone Payments",
-    desc: "Split payments across booking, pre-event, and post-event milestones with secure escrow protection.",
-    color: "text-success bg-success/10",
+    icon:  Shield,
+    title: "Escrow Payments",
+    desc:  "Split milestone payments with secure escrow protection.",
+    color: "bg-rose-100 text-rose-700",
   },
 ];
 
 const EVENT_TYPES = [
-  "Wedding", "Birthday", "Bachelorette",
-  "Anniversary", "Corporate", "Baby Shower",
-  "Engagement", "Kitty Party", "Reunion",
-  "Cocktail Party", "Bachelor Party", "Any Event",
-];
-
-const STATS = [
-  { value: "2,400+", label: "Verified Vendors" },
-  { value: "18,000+", label: "Events Delivered" },
-  { value: "48Cr+", label: "Transaction Volume" },
-  { value: "4.8", label: "Platform Rating" },
+  "💍 Wedding", "🎂 Birthday", "🥂 Bachelorette",
+  "🎊 Engagement", "💼 Corporate", "🌸 Baby Shower",
+  "🍵 Kitty Party", "🤝 Reunion", "🎤 Cocktail Party",
+  "🎉 Anniversary", "🎓 Graduation", "✨ Any Event",
 ];
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
+
+      {/* ── Navbar ── */}
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
+
             <Link href="/" className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <CalendarCheck className="size-4 text-primary-foreground" />
@@ -74,6 +73,23 @@ export default function HomePage() {
                 Event<span className="text-primary">Sync</span>
               </span>
             </Link>
+
+            <nav className="hidden md:flex items-center gap-1 text-sm">
+              {[
+                { label: "Vendors",  href: "/vendors"  },
+                { label: "Pricing",  href: "/pricing"  },
+                { label: "About",    href: "/about"    },
+              ].map(({ label, href }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="px-3 py-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/login">Sign in</Link>
@@ -86,43 +102,58 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* ── Hero ── */}
       <section className="relative overflow-hidden py-20 sm:py-28">
-        <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
-          <div className="absolute -top-24 right-1/4 w-96 h-96 rounded-full bg-primary/8 blur-3xl" />
-          <div className="absolute top-1/2 -left-32 w-80 h-80 rounded-full bg-chart-2/8 blur-3xl" />
+        {/* Gradient blobs */}
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-32 right-1/4 h-125 w-125 rounded-full bg-primary/10 blur-[100px]" />
+          <div className="absolute top-1/2 -left-24 h-100 w-100 rounded-full bg-chart-2/10 blur-[80px]" />
         </div>
+
         <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
-          <Badge variant="secondary" className="mb-6 inline-flex gap-1.5 px-3 py-1.5">
+          <Badge variant="secondary" className="mb-6 gap-1.5 px-3 py-1.5">
             <Sparkles className="size-3 text-primary" />
-            <span>Built for India&apos;s event industry</span>
+            Built for India&apos;s event industry
           </Badge>
+
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight mb-6">
             Every event.{" "}
             <span className="text-primary">Every vendor.</span>
             <br />
             One platform.
           </h1>
+
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            EventSync is the all-in-one ERP for event planning. Plan, book, track, and pay with confidence.
+            EventSync is the all-in-one ERP for event planning — from intimate kitty parties
+            to grand weddings. Plan, book, track, and pay with confidence.
           </p>
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Button size="xl" asChild>
+            <Button size="lg" asChild>
               <Link href="/register">
-                Start planning free <ArrowRight className="size-4 ml-1" />
+                Start planning free <ArrowRight className="size-4" />
               </Link>
             </Button>
-            <Button size="xl" variant="outline" asChild>
+            <Button size="lg" variant="outline" asChild>
               <Link href="/register?role=VENDOR">List your business</Link>
             </Button>
           </div>
+
+          <p className="mt-4 text-xs text-muted-foreground">
+            No credit card required · Free forever for customers
+          </p>
         </div>
       </section>
 
+      {/* ── Event type chips ── */}
       <section className="py-8 border-y border-border/50 bg-muted/30">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex flex-wrap justify-center gap-2">
             {EVENT_TYPES.map((type) => (
-              <span key={type} className="rounded-full border border-border bg-background px-3.5 py-1.5 text-sm font-medium">
+              <span
+                key={type}
+                className="rounded-full border border-border bg-background px-3.5 py-1.5 text-sm font-medium"
+              >
                 {type}
               </span>
             ))}
@@ -130,33 +161,44 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Stats ── */}
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="text-center space-y-1">
-                <div className="text-3xl sm:text-4xl font-bold">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {[
+              { value: "2,400+",  label: "Verified Vendors"   },
+              { value: "18,000+", label: "Events Delivered"   },
+              { value: "₹48Cr+",  label: "Transaction Volume" },
+              { value: "4.8★",    label: "Platform Rating"    },
+            ].map((s) => (
+              <div key={s.label}>
+                <div className="text-3xl sm:text-4xl font-bold">{s.value}</div>
+                <div className="text-sm text-muted-foreground mt-1">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ── Features ── */}
       <section className="py-16 sm:py-24 bg-muted/20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 space-y-3">
             <Badge variant="outline">Platform features</Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Everything you need</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">Designed for the full event lifecycle.</p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              Everything in one workspace
+            </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-xl border border-border bg-card p-6 hover:shadow-md transition-all duration-200">
+              <div
+                key={f.title}
+                className="rounded-xl border border-border bg-card p-6 hover:shadow-md hover:border-primary/20 transition-all"
+              >
                 <div className={`size-10 rounded-lg flex items-center justify-center mb-4 ${f.color}`}>
                   <f.icon className="size-5" />
                 </div>
-                <h3 className="font-semibold text-base mb-2">{f.title}</h3>
+                <h3 className="font-semibold mb-2">{f.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </div>
             ))}
@@ -164,45 +206,126 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 sm:py-24 bg-sidebar">
-        <div className="mx-auto max-w-3xl px-4 text-center space-y-6">
-          <div className="flex justify-center gap-1 mb-2">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="size-5 fill-warning text-warning" />
+      {/* ── Three roles ── */}
+      <section className="py-16 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 space-y-3">
+            <Badge variant="outline">Who it&apos;s for</Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              Three tailored experiences
+            </h2>
+          </div>
+          <div className="grid lg:grid-cols-3 gap-6">
+            {[
+              {
+                emoji: "🎉", role: "Customer",
+                headline: "Plan events that wow",
+                points: [
+                  "Visual Event Builder with timeline",
+                  "Browse & compare 2,400+ vendors",
+                  "Quote negotiation & milestone payments",
+                  "Real-time event tracker",
+                ],
+                href: "/register",
+                cta:  "Start planning",
+                cls:  "border-primary/30 bg-primary/5",
+              },
+              {
+                emoji: "🏢", role: "Vendor",
+                headline: "Run your entire operation",
+                points: [
+                  "Smart booking pipeline (CRM-style)",
+                  "Fractional inventory management",
+                  "Staff assignment & scheduling",
+                  "GST invoice generation",
+                ],
+                href: "/register?role=VENDOR",
+                cta:  "List your business",
+                cls:  "border-blue-200 bg-blue-50",
+              },
+              {
+                emoji: "⚙️", role: "Admin",
+                headline: "Manage the ecosystem",
+                points: [
+                  "Vendor KYC review & verification",
+                  "Platform-wide revenue analytics",
+                  "Commission & payout management",
+                  "Dispute resolution centre",
+                ],
+                href: "/about",
+                cta:  "Learn more",
+                cls:  "border-amber-200 bg-amber-50",
+              },
+            ].map((r) => (
+              <div key={r.role} className={`rounded-2xl border-2 p-6 space-y-5 ${r.cls}`}>
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl">{r.emoji}</span>
+                  <Badge variant="outline" className="text-xs">{r.role}</Badge>
+                </div>
+                <h3 className="text-lg font-bold">{r.headline}</h3>
+                <ul className="space-y-2">
+                  {r.points.map((p) => (
+                    <li key={p} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle className="size-4 text-green-600 mt-0.5 shrink-0" />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href={r.href}>{r.cta}</Link>
+                </Button>
+              </div>
             ))}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-sidebar-foreground tracking-tight">
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="py-16 sm:py-24 bg-primary">
+        <div className="mx-auto max-w-3xl px-4 text-center space-y-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground">
             Ready to transform how you plan events?
           </h2>
-          <p className="text-sidebar-foreground/60 text-base max-w-lg mx-auto">
-            Join thousands of event planners and vendors who trust EventSync.
+          <p className="text-primary-foreground/70 text-base max-w-lg mx-auto">
+            Join thousands of event planners and vendors across India.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-3">
-            <Button size="xl" asChild>
-              <Link href="/register">Get started — it&apos;s free</Link>
+            <Button size="lg" variant="secondary" asChild>
+              <Link href="/register">Get started free</Link>
             </Button>
-            <Button size="xl" variant="secondary" asChild>
+            <Button
+              size="lg"
+              className="bg-white/10 text-white border border-white/20 hover:bg-white/20"
+              asChild
+            >
               <Link href="/login">Sign in</Link>
             </Button>
           </div>
         </div>
       </section>
 
+      {/* ── Footer ── */}
       <footer className="border-t border-border py-8">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
-                <CalendarCheck className="size-3.5 text-primary-foreground" />
-              </div>
-              <span className="font-bold text-sm">Event<span className="text-primary">Sync</span></span>
-            </Link>
-            <p className="text-xs text-muted-foreground">
-              {String.fromCharCode(169)} {new Date().getFullYear()} EventSync. Made for India.
-            </p>
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
+              <CalendarCheck className="size-3.5 text-primary-foreground" />
+            </div>
+            <span className="font-bold text-sm">
+              Event<span className="text-primary">Sync</span>
+            </span>
+          </Link>
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} EventSync. Made with ❤️ for India.
+          </p>
+          <div className="flex gap-4 text-xs text-muted-foreground">
+            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+            <Link href="/terms"   className="hover:text-foreground transition-colors">Terms</Link>
+            <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

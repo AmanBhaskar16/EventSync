@@ -1,13 +1,133 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// FILE PATH: prisma/schema.prisma
+// After downloading rename this file to: schema.prisma
+// Place it in the prisma/ folder at your project root
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum Role {
+  CUSTOMER
+  VENDOR
+  ADMIN
+}
+
+enum KYCStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum VendorCategory {
+  CATERING
+  DECOR
+  PHOTOGRAPHY
+  VIDEOGRAPHY
+  VENUE
+  ENTERTAINMENT
+  DJ_MUSIC
+  TRANSPORTATION
+  FLORALS
+  MAKEUP_ARTIST
+  MEHENDI
+  SOUND_LIGHTING
+  INVITATION_DESIGN
+  CAKE_BAKERY
+  SECURITY
+  ANCHOR_HOST
+  OTHER
+}
+
+// ─────────────────────────────────────────────
+// MODELS — Feature 1 only (Auth + Profiles)
+// Booking, Event, Payment etc. added in later features
+// ─────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  phone         String?
+  avatar        String?
+  role          Role      @default(CUSTOMER)
+  passwordHash  String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  customer Customer?
+  vendor   Vendor?
+  admin    Admin?
+
+  @@map("users")
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address   String?
+  city      String?
+  state     String?
+  pincode   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("customers")
+}
+
+model Vendor {
+  id               String         @id @default(cuid())
+  userId           String         @unique
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName     String
+  category         VendorCategory @default(OTHER)
+  description      String?
+  gstin            String?
+  pan              String?
+  businessRegNo    String?
+  city             String         @default("")
+  state            String         @default("")
+  pincode          String         @default("")
+  serviceRadius    Int            @default(50)
+  kycStatus        KYCStatus      @default(PENDING)
+  kycRejectionNote String?
+  isVerified       Boolean        @default(false)
+  isActive         Boolean        @default(true)
+  commissionRate   Float          @default(12.0)
+  tier             String         @default("STANDARD")
+  avgRating        Float          @default(0)
+  totalReviews     Int            @default(0)
+  totalBookings    Int            @default(0)
+  responseTime     Int            @default(24)
+  portfolioImages  String[]       @default([])
+  bankAccountNo    String?
+  bankIfsc         String?
+  bankName         String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@map("vendors")
+}
+
+model Admin {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissions String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("admins")
 }
