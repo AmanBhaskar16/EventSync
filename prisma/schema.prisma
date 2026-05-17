@@ -1,6 +1,3 @@
-// FILE PATH: prisma/schema.prisma
-// After downloading rename this file to: schema.prisma
-// Place it in the prisma/ folder at your project root
 
 generator client {
   provider = "prisma-client-js"
@@ -48,9 +45,65 @@ enum VendorCategory {
   OTHER
 }
 
+enum EventType {
+  WEDDING
+  BIRTHDAY
+  BACHELORETTE
+  BACHELOR
+  ANNIVERSARY
+  CORPORATE
+  KITTY_PARTY
+  REUNION
+  BABY_SHOWER
+  ENGAGEMENT
+  COCKTAIL_PARTY
+  OTHER
+}
+
+enum EventStatus {
+  DRAFT
+  PLANNING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum BookingStatus {
+  INQUIRY
+  QUOTE_SENT
+  NEGOTIATION
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMilestone {
+  BOOKING_CONFIRMATION
+  PRE_EVENT
+  POST_EVENT
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED_CUSTOMER
+  RESOLVED_VENDOR
+  CLOSED
+}
+
 // ─────────────────────────────────────────────
-// MODELS — Feature 1 only (Auth + Profiles)
-// Booking, Event, Payment etc. added in later features
+// MODELS
 // ─────────────────────────────────────────────
 
 model User {
@@ -83,6 +136,8 @@ model Customer {
   pincode   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  events Event[]
 
   @@map("customers")
 }
@@ -118,6 +173,9 @@ model Vendor {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 
+  bookings       Booking[]
+  inventoryItems InventoryItem[]
+
   @@map("vendors")
 }
 
@@ -130,4 +188,105 @@ model Admin {
   updatedAt   DateTime @updatedAt
 
   @@map("admins")
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  customerId  String
+  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  title       String
+  type        EventType   @default(OTHER)
+  status      EventStatus @default(DRAFT)
+  eventDate   DateTime
+  endDate     DateTime?
+  venue       String?
+  city        String?
+  state       String?
+  guestCount  Int?
+  budget      Float?
+  description String?
+  isPublic    Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  bookings Booking[]
+
+  @@map("events")
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  eventId         String
+  event           Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  vendorId        String
+  vendor          Vendor        @relation(fields: [vendorId], references: [id])
+  status          BookingStatus @default(INQUIRY)
+  agreedPrice     Float?
+  platformFee     Float?
+  vendorPayout    Float?
+  specialRequests String?
+  guestCount      Int?
+  startTime       DateTime?
+  endTime         DateTime?
+  confirmedAt     DateTime?
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  cancelReason    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  payments Payment[]
+  dispute  Dispute?
+
+  @@map("bookings")
+}
+
+model Payment {
+  id                String           @id @default(cuid())
+  bookingId         String
+  booking           Booking          @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  milestone         PaymentMilestone
+  amount            Float
+  status            PaymentStatus    @default(PENDING)
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  paidAt            DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@map("payments")
+}
+
+model Dispute {
+  id          String        @id @default(cuid())
+  bookingId   String        @unique
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  raisedBy    String
+  reason      String
+  description String        @default("")
+  status      DisputeStatus @default(OPEN)
+  resolution  String?
+  resolvedBy  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("disputes")
+}
+
+model InventoryItem {
+  id             String   @id @default(cuid())
+  vendorId       String
+  vendor         Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  totalQuantity  Int      @default(0)
+  unit           String   @default("units")
+  isReusable     Boolean  @default(true)
+  lowStockAlert  Int      @default(5)
+  maintenanceQty Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("inventory_items")
 }
