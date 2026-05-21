@@ -1,6 +1,6 @@
-// src/app/(dashboard)/admin/dashboard/page.tsx
+
 // URL: /admin/dashboard
-//
+
 // Server component — fetches platform-wide stats from DB.
 // Shows GMV, vendor counts, KYC queue, open disputes.
 

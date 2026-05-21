@@ -1,5 +1,4 @@
-// src/app/api/auth/[...nextauth]/route.ts
-//
+
 // NextAuth v5 catch-all handler.
 // This single file handles ALL of:
 //   GET  /api/auth/session

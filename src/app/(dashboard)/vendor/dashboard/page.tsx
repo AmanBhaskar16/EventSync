@@ -1,4 +1,4 @@
-// src/app/(dashboard)/vendor/dashboard/page.tsx
+
 // URL: /vendor/dashboard
 
 import { auth }     from "@/lib/auth";

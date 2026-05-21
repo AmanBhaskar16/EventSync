@@ -1,4 +1,4 @@
-// src/app/api/auth/register/route.ts
+
 // URL: POST /api/auth/register
 //
 // Why this is separate from NextAuth:

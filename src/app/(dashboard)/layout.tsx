@@ -1,4 +1,4 @@
-// src/app/(dashboard)/layout.tsx
+
 // URL: wraps /customer/* /vendor/* /admin/*
 //
 // Server component — reads session on server, redirects if unauthenticated.
