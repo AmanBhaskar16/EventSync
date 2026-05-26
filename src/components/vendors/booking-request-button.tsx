@@ -21,13 +21,19 @@ export function BookingRequestButton({ vendorId, vendorName }: { vendorId: strin
 
   function handleClick() {
     if (!session?.user) { router.push(`/login?callbackUrl=/vendors/${vendorId}`); return; }
-    if (session.user.role !== "CUSTOMER") { toast.error("Only customers can request bookings."); return; }
+    if (session.user.role !== "CUSTOMER") { 
+      toast.error("Only customers can request bookings.");
+       return;
+       }
     setExpanded(true);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.eventDate) { toast.error("Please select an event date."); return; }
+    if (!form.eventDate) { 
+      toast.error("Please select an event date."); 
+      return; 
+    }
     setLoading(true);
     try {
       const res  = await fetch("/api/bookings", {
@@ -39,12 +45,23 @@ export function BookingRequestButton({ vendorId, vendorName }: { vendorId: strin
           specialRequests: form.requirements || undefined,
         }),
       });
-      const data = await res.json() as { success: boolean; data?: { bookingId: string }; error?: string };
-      if (!res.ok || !data.success) { toast.error(data.error ?? "Failed to send inquiry."); return; }
+      const data = await res.json() as { 
+        success: boolean; 
+        data?: { bookingId: string }; 
+        error?: string 
+      };
+      if (!res.ok || !data.success) { 
+        toast.error(data.error ?? "Failed to send inquiry."); 
+        return; 
+      }
       toast.success(`Inquiry sent to ${vendorName}!`);
       router.push(`/customer/bookings/${data.data!.bookingId}`);
-    } catch { toast.error("Network error. Please try again."); }
-    finally   { setLoading(false); }
+    } catch { 
+      toast.error("Network error. Please try again."); 
+    }
+    finally { 
+      setLoading(false); 
+    }
   }
 
   if (expanded) return (

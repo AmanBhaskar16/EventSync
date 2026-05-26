@@ -26,7 +26,9 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse>>
 
     if (!parsed.success) {
       return NextResponse.json(
-        { success: false, error: parsed.error.issues[0].message },
+        { success: false, 
+          error: parsed.error.issues[0].message 
+        },
         { status: 400 }
       );
     }
@@ -37,7 +39,9 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse>>
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return NextResponse.json(
-        { success: false, error: "An account with this email already exists." },
+        { success: false, 
+          error: "An account with this email already exists." 
+        },
         { status: 409 }
       );
     }
@@ -75,14 +79,20 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse>>
       {
         success: true,
         message: "Account created successfully. Please sign in.",
-        data:    { id: user.id, email: user.email, role: user.role },
+        data:    { 
+          id: user.id, 
+          email: user.email, 
+          role: user.role 
+        },
       },
       { status: 201 }
     );
   } catch (err) {
     console.error("[REGISTER]", err);
     return NextResponse.json(
-      { success: false, error: "Something went wrong. Please try again." },
+      { success: false, 
+        error: "Something went wrong. Please try again." 
+      },
       { status: 500 }
     );
   }

@@ -24,15 +24,28 @@ export function VendorSearchResults() {
     setLoading(true); setError("");
     try {
       const res  = await fetch(`/api/vendors?${searchParams.toString()}`);
-      const data = await res.json() as { success: boolean; data?: { vendors: VendorCardData[]; pagination: Pagination }; error?: string };
+      const data = await res.json() as { 
+        success: boolean; 
+        data?: { 
+          vendors: VendorCardData[]; 
+          pagination: Pagination 
+        }; 
+        error?: string 
+      };
       if (!data.success || !data.data) throw new Error(data.error ?? "Failed");
       setVendors(data.data.vendors);
       setPagination(data.data.pagination);
-    } catch { setError("Failed to load vendors. Please try again."); }
-    finally  { setLoading(false); }
+    } catch { 
+      setError("Failed to load vendors. Please try again."); 
+    }
+    finally { 
+      setLoading(false); 
+    }
   }, [searchParams]);
 
-  useEffect(() => { fetchVendors(); }, [fetchVendors]);
+  useEffect(() => { 
+    fetchVendors(); 
+  }, [fetchVendors]);
 
   function goToPage(page: number) {
     const next = new URLSearchParams(searchParams.toString());

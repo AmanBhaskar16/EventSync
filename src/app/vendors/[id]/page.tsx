@@ -20,19 +20,54 @@ import { formatRelativeTime } from "@/lib/utils/format";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type Addon   = { id: string; name: string; price: number };
-type Service = { id: string; name: string; description: string | null; basePrice: number; unit: string; addons: Addon[] };
+type Addon   = { 
+  id: string; 
+  name: string; 
+  price: number 
+};
+type Service = { 
+  id: string; 
+  name: string; 
+  description: string | null; 
+  basePrice: number; 
+  unit: string; 
+  addons: Addon[] 
+};
 type Review  = {
-  id: string; reviewerName: string; overallRating: number; comment: string | null;
-  vendorReply: string | null; createdAt: Date;
-  punctuality: number; quality: number; communication: number; value: number; professionalism: number;
+  id: string; 
+  reviewerName: string; 
+  overallRating: number; 
+  comment: string | null;
+  vendorReply: string | null; 
+  createdAt: Date;
+  punctuality: number; 
+  quality: number; 
+  communication: number; 
+  value: number; 
+  professionalism: number;
 };
 type VendorProfile = {
-  id: string; businessName: string; category: string; description: string | null;
-  city: string; state: string; pincode: string; serviceRadius: number;
-  isVerified: boolean; avgRating: number; totalReviews: number; totalBookings: number;
-  responseTime: number; tier: string; portfolioImages: string[]; createdAt: Date;
-  user:     { name: string | null; avatar: string | null; createdAt: Date };
+  id: string; 
+  businessName: string; 
+  category: string; 
+  description: string | null;
+  city: string; 
+  state: string; 
+  pincode: string; 
+  serviceRadius: number;
+  isVerified: boolean; 
+  avgRating: number; 
+  totalReviews: number; 
+  totalBookings: number;
+  responseTime: number; 
+  tier: string; 
+  portfolioImages: string[]; 
+  createdAt: Date;
+  user:     { 
+    name: string | null; 
+    avatar: string | null; 
+    createdAt: Date 
+  };
   services: Service[];
   reviews:  Review[];
 };
@@ -52,9 +87,11 @@ async function getVendor(id: string): Promise<VendorProfile | null> {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id }  = await params;
   const vendor  = await getVendor(id);
-  if (!vendor)  return { title: "Vendor Not Found" };
+  if (!vendor)  return { 
+    title: "Vendor Not Found" 
+  };
   return {
-    title:       `${vendor.businessName} | EventSync`,
+    title:  `${vendor.businessName} | EventSync`,
     description: vendor.description ?? `${VENDOR_CATEGORY_LABELS[vendor.category]} in ${vendor.city}`,
   };
 }

@@ -14,39 +14,95 @@ export async function GET(
 ) {
   try {
     const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false, error: "Unauthenticated." }, { status: 401 });
+    if (!session?.user) return NextResponse.json({ 
+      success: false, 
+      error: "Unauthenticated." 
+    }, { status: 401 });
 
     const { id } = await params;
 
     const booking = await prisma.booking.findUnique({
       where: { id },
       select: {
-        id: true, status: true, agreedPrice: true, specialRequests: true,
-        guestCount: true, confirmedAt: true, completedAt: true,
-        cancelledAt: true, cancelReason: true, createdAt: true, updatedAt: true,
+        id: true, 
+        status: true, 
+        agreedPrice: true, 
+        specialRequests: true,
+        guestCount: true, 
+        confirmedAt: true, 
+        completedAt: true,
+        cancelledAt: true, 
+        cancelReason: true, 
+        createdAt: true, 
+        updatedAt: true,
         event: {
           select: {
-            id: true, title: true, type: true, eventDate: true,
-            city: true, guestCount: true,
-            customer: { select: { id: true, user: { select: { id: true, name: true, email: true, avatar: true } } } },
+            id: true, 
+            title: true, 
+            type: true, 
+            eventDate: true,
+            city: true, 
+            guestCount: true,
+            customer: { 
+              select: { 
+                id: true, 
+                user: { 
+                  select: { 
+                    id: true, 
+                    name: true, 
+                    email: true, 
+                    avatar: true 
+                  } 
+                } 
+              } 
+            },
           },
         },
         vendor: {
           select: {
-            id: true, businessName: true, category: true, city: true, state: true,
-            avgRating: true, responseTime: true, isVerified: true,
-            user: { select: { id: true, name: true, email: true } },
+            id: true, 
+            businessName: true, 
+            category: true, 
+            city: true, 
+            state: true,
+            avgRating: true, 
+            responseTime: true, 
+            isVerified: true,
+            user: { 
+              select: { 
+                id: true, 
+                name: true, 
+                email: true 
+              } 
+            },
           },
         },
         payments: {
-          select: { id: true, milestone: true, amount: true, status: true, paidAt: true },
-          orderBy: { createdAt: "asc" },
+          select: { 
+            id: true,
+            milestone: true, 
+            amount: true, 
+            status: true, 
+            paidAt: true },
+          orderBy: { 
+            createdAt: "asc" 
+          },
         },
         review: {
-          select: { id: true, overallRating: true, comment: true, createdAt: true },
+          select: { 
+            id: true, 
+            overallRating: true, 
+            comment: true, 
+            createdAt: true 
+          },
         },
         dispute: {
-          select: { id: true, reason: true, status: true, createdAt: true },
+          select: { 
+            id: true, 
+            reason: true, 
+            status: true, 
+            createdAt: true 
+          },
         },
       },
     });
@@ -66,13 +122,22 @@ export async function GET(
     const isAdmin    = session.user.role === "ADMIN";
 
     if (!isCustomer && !isVendor && !isAdmin) {
-      return NextResponse.json({ success: false, error: "Access denied." }, { status: 403 });
+      return NextResponse.json({ 
+        success: false, 
+        error: "Access denied." 
+      }, { status: 403 });
     }
 
-    return NextResponse.json({ success: true, data: booking });
+    return NextResponse.json({ 
+      success: true, 
+      data: booking 
+    });
   } catch (err) {
     console.error("[GET_BOOKING]", err);
-    return NextResponse.json({ success: false, error: "Failed to fetch booking." }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: "Failed to fetch booking." 
+    }, { status: 500 });
   }
 }
 
@@ -82,7 +147,10 @@ export async function PATCH(
 ) {
   try {
     const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false, error: "Unauthenticated." }, { status: 401 });
+    if (!session?.user) return NextResponse.json({ 
+      success: false, 
+      error: "Unauthenticated." 
+    }, { status: 401 });
 
     const { id }   = await params;
     const body     = await req.json() as { status?: string; cancelReason?: string };
@@ -92,11 +160,34 @@ export async function PATCH(
       where:  { id },
       select: {
         status: true,
-        event:  { select: { customer: { select: { user: { select: { id: true } } } } } },
-        vendor: { select: { user: { select: { id: true } } } },
+        event:  { 
+          select: { 
+            customer: { 
+              select: { 
+                user: { 
+                  select: { 
+                    id: true 
+                  } 
+                } 
+              } 
+            } 
+          } 
+        },
+        vendor: { 
+          select: { 
+            user: { 
+              select: { 
+                id: true 
+              } 
+            } 
+          } 
+        },
       },
     });
-    if (!booking) return NextResponse.json({ success: false, error: "Booking not found." }, { status: 404 });
+    if (!booking) return NextResponse.json({ 
+      success: false, 
+      error: "Booking not found." 
+    }, { status: 404 });
 
     const b        = booking as Record<string, unknown>;
     const event    = b.event    as Record<string, unknown>;
@@ -119,8 +210,9 @@ export async function PATCH(
 
     if (status && !(allowed[current] ?? []).includes(status)) {
       return NextResponse.json(
-        { success: false, error: `Cannot transition from ${current} to ${status}.` },
-        { status: 400 }
+        { success: false, 
+          error: `Cannot transition from ${current} to ${status}.` 
+        },{ status: 400 }
       );
     }
 
@@ -131,11 +223,21 @@ export async function PATCH(
     if (status === "COMPLETED")  data.completedAt  = new Date();
     if (status === "CANCELLED")  data.cancelledAt  = new Date();
 
-    const updated = await prisma.booking.update({ where: { id }, data });
+    const updated = await prisma.booking.update({ 
+      where: { id }, 
+      data 
+    });
 
-    return NextResponse.json({ success: true, data: updated, message: "Booking updated." });
+    return NextResponse.json({ 
+      success: true, 
+      data: updated, 
+      message: "Booking updated." 
+    });
   } catch (err) {
     console.error("[UPDATE_BOOKING]", err);
-    return NextResponse.json({ success: false, error: "Failed to update booking." }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: "Failed to update booking." 
+    }, { status: 500 });
   }
 }

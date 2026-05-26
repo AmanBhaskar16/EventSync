@@ -41,7 +41,12 @@ export async function GET(req: NextRequest) {
       const priceFilter: Record<string, number> = {};
       if (minPrice > 0) priceFilter.gte = minPrice;
       if (maxPrice > 0) priceFilter.lte = maxPrice;
-      where.services = { some: { basePrice: priceFilter, isActive: true } };
+      where.services = { 
+        some: { 
+          basePrice: priceFilter, 
+          isActive: true 
+        } 
+      };
     }
 
     const orderBy: Record<string, "asc" | "desc"> =
@@ -53,15 +58,29 @@ export async function GET(req: NextRequest) {
       prisma.vendor.findMany({
         where,
         select: {
-          id: true, businessName: true, category: true, description: true,
-          city: true, state: true, avgRating: true, totalReviews: true,
-          totalBookings: true, responseTime: true, isVerified: true,
-          tier: true, portfolioImages: true,
+          id: true, 
+          businessName: true, 
+          category: true, 
+          description: true,
+          city: true, 
+          state: true, 
+          avgRating: true, 
+          totalReviews: true,
+          totalBookings: true, 
+          responseTime: true, 
+          isVerified: true,
+          tier: true, 
+          portfolioImages: true,
           services: {
             where:   { isActive: true },
             orderBy: { basePrice: "asc" },
             take:    3,
-            select:  { id: true, name: true, basePrice: true, unit: true },
+            select:  { 
+              id: true, 
+              name: true, 
+              basePrice: true, 
+              unit: true 
+            },
           },
         },
         orderBy,
@@ -78,7 +97,10 @@ export async function GET(req: NextRequest) {
       data: {
         vendors,
         pagination: {
-          total, page, pageSize: PAGE_SIZE, totalPages,
+          total, 
+          page, 
+          pageSize: PAGE_SIZE, 
+          totalPages,
           hasNextPage: page < totalPages,
           hasPrevPage: page > 1,
         },
@@ -87,7 +109,9 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     console.error("[VENDORS_SEARCH]", err);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch vendors." },
+      { success: false, 
+        error: "Failed to fetch vendors." 
+      },
       { status: 500 }
     );
   }

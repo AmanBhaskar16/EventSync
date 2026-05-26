@@ -6,11 +6,25 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn, formatCurrency, VENDOR_CATEGORY_LABELS } from "@/lib/utils";
 
 export type VendorCardData = {
-  id: string; businessName: string; category: string; description: string | null;
-  city: string; state: string; avgRating: number; totalReviews: number;
-  totalBookings: number; responseTime: number; isVerified: boolean; tier: string;
+  id: string; 
+  businessName: string; 
+  category: string; 
+  description: string | null;
+  city: string; 
+  state: string; 
+  avgRating: number; 
+  totalReviews: number;
+  totalBookings: number; 
+  responseTime: number; 
+  isVerified: boolean; 
+  tier: string;
   portfolioImages: string[];
-  services: { id: string; name: string; basePrice: number; unit: string }[];
+  services: { 
+    id: string; 
+    name: string;
+    basePrice: number; 
+    unit: string 
+  }[];
 };
 
 const GRAD = [

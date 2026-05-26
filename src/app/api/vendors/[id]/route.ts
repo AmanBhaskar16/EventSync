@@ -16,29 +16,67 @@ export async function GET(
     const vendor = await prisma.vendor.findUnique({
       where: { id, isActive: true, kycStatus: "APPROVED" },
       select: {
-        id: true, businessName: true, category: true, description: true,
-        city: true, state: true, pincode: true, serviceRadius: true,
-        isVerified: true, kycStatus: true, avgRating: true,
-        totalReviews: true, totalBookings: true, responseTime: true,
-        tier: true, portfolioImages: true, createdAt: true,
-        user: { select: { name: true, avatar: true, createdAt: true } },
+        id: true, 
+        businessName: true, 
+        category: true, 
+        description: true,
+        city: true, 
+        state: true, 
+        pincode: true, 
+        serviceRadius: true,
+        isVerified: true, 
+        kycStatus: true, 
+        avgRating: true,
+        totalReviews: true, 
+        totalBookings: true, 
+        responseTime: true,
+        tier: true, 
+        portfolioImages: true, 
+        createdAt: true,
+        user: { 
+          select: { 
+            name: true, 
+            avatar: true, 
+            createdAt: true 
+          } 
+        },
         services: {
           where:   { isActive: true },
           orderBy: { basePrice: "asc" },
           select: {
-            id: true, name: true, description: true, basePrice: true, unit: true,
-            addons: { select: { id: true, name: true, price: true } },
+            id: true, 
+            name: true, 
+            description: true, 
+            basePrice: true, 
+            unit: true,
+            addons: { 
+              select: { 
+                id: true, 
+                name: true, 
+                price: true 
+              } 
+            },
           },
         },
         reviews: {
-          where:   { isPublic: true, isFlagged: false },
+          where:   { 
+            isPublic: true, 
+            isFlagged: false 
+          },
           orderBy: { createdAt: "desc" },
           take:    10,
           select: {
-            id: true, reviewerName: true, overallRating: true, comment: true,
-            vendorReply: true, createdAt: true,
-            punctuality: true, quality: true, communication: true,
-            value: true, professionalism: true,
+            id: true, 
+            reviewerName: true, 
+            overallRating: true, 
+            comment: true,
+            vendorReply: true, 
+            createdAt: true,
+            punctuality: true, 
+            quality: true, 
+            communication: true,
+            value: true, 
+            professionalism: true,
           },
         },
       },
@@ -46,16 +84,23 @@ export async function GET(
 
     if (!vendor) {
       return NextResponse.json(
-        { success: false, error: "Vendor not found." },
+        { success: false, 
+          error: "Vendor not found." 
+        },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ success: true, data: vendor });
+    return NextResponse.json({ 
+      success: true, 
+      data: vendor 
+    });
   } catch (err) {
     console.error("[VENDOR_PROFILE]", err);
     return NextResponse.json(
-      { success: false, error: "Failed to load vendor." },
+      { success: false, 
+        error: "Failed to load vendor." 
+      },
       { status: 500 }
     );
   }
