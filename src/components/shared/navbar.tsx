@@ -16,14 +16,14 @@ const ROLE_HOME: Record<string, string> = {
 
 const NAV_LINKS = [
   { label: "Find Vendors", href: "/vendors" },
-  { label: "About",        href: "/about"   },
+  { label: "About", href: "/about"},
 ];
 
 export function Navbar() {
   const pathname  = usePathname();
   const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [dropOpen,   setDropOpen]   = useState(false);
+  const [dropOpen, setDropOpen]   = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,9 +35,9 @@ export function Navbar() {
   }, []);
 
   const isLoggedIn = status === "authenticated";
-  const user       = session?.user;
-  const dashHome   = user?.role ? (ROLE_HOME[user.role] ?? "/") : "/";
-  const initials   = (user?.name ?? "U").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
+  const user = session?.user;
+  const dashHome = user?.role ? (ROLE_HOME[user.role] ?? "/") : "/";
+  const initials = (user?.name ?? "U").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">

@@ -1,54 +1,35 @@
 
-// POST — vendor sends a new quote
-// PATCH — customer accepts / rejects / counter-offers
-
 import { NextRequest, NextResponse } from "next/server";
 import { auth }   from "@/lib/auth";
 import { prisma } from "@/lib/db/prisma";
-import { Prisma } from "@prisma/client";
 
-type LineItem = { 
-    description: string; 
-    quantity: number; 
-    unitPrice: number; 
-    total: number 
-};
+type LineItem = { description: string; quantity: number; unitPrice: number; total: number };
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(req: NextRequest,{ params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
-    if (!session?.user) return NextResponse.json({ 
-      success: false, 
-      error: "Unauthenticated." 
-    }, { status: 401 });
+    if (!session?.user) return NextResponse.json({ success: false, error: "Unauthenticated." }, { status: 401 });
 
     const { id: bookingId } = await params;
 
-    // Only the vendor of this booking can send a quote
     const booking = await prisma.booking.findUnique({
       where:  { id: bookingId },
-      select: { 
-        id: true, 
+      select: { id: true, 
         status: true, 
         vendorId: true, 
         vendor: { 
-          select: { 
-            userId: true 
-          } 
+          select: { userId: true } 
         } 
       },
     });
-    if (!booking) return NextResponse.json({ 
+    if(!booking) return NextResponse.json({ 
       success: false, 
       error: "Booking not found." 
     }, { status: 404 });
 
-    const b = booking as Record<string, unknown>;
+    const b      = booking as Record<string, unknown>;
     const vendor = b.vendor as Record<string, unknown>;
-    if (session.user.id !== vendor.userId) {
+    if(session.user.id !== vendor.userId){
       return NextResponse.json({ 
         success: false, 
         error: "Only the vendor can send quotes." 
@@ -56,36 +37,34 @@ export async function POST(
     }
 
     const currentStatus = b.status as string;
-    if (!["INQUIRY", "NEGOTIATION"].includes(currentStatus)) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: `Cannot send quote when booking is ${currentStatus}.` 
-        },
-        { status: 400 }
-      );
+    if(!["INQUIRY", "NEGOTIATION"].includes(currentStatus)){
+      return NextResponse.json({ 
+        success: false, 
+        error: `Cannot send quote when booking is ${currentStatus}.` 
+      }, { status: 400 });
     }
 
     const body = await req.json() as {
-      lineItems:  LineItem[];
-      gstRate:    number;
-      validDays:  number;
-      notes?:     string;
-      terms?:     string;
+      lineItems: LineItem[]; 
+      gstRate: number; 
+      validDays: number; 
+      notes?: string; 
+      terms?: string;
     };
-
     const { lineItems, gstRate = 18, validDays = 7, notes, terms } = body;
 
-    if (!lineItems?.length) {
-      return NextResponse.json({ success: false, error: "At least one line item is required." }, { status: 400 });
+    if(!lineItems?.length){
+      return NextResponse.json({ 
+        success: false, 
+        error: "At least one line item is required." 
+      }, { status: 400 });
     }
 
-    const subtotal   = lineItems.reduce((s, item) => s + item.total, 0);
-    const gstAmount  = (subtotal * gstRate) / 100;
+    const subtotal    = lineItems.reduce((s, item) => s + item.total, 0);
+    const gstAmount   = (subtotal * gstRate) / 100;
     const totalAmount = subtotal + gstAmount;
     const validUntil  = new Date(Date.now() + validDays * 86400000);
 
-    // Get latest version number
     const latestQuote = await prisma.quote.findFirst({
       where:   { bookingId },
       orderBy: { version: "desc" },
@@ -93,37 +72,37 @@ export async function POST(
     });
     const version = ((latestQuote as { version?: number } | null)?.version ?? 0) + 1;
 
+    // Cast lineItems to any to satisfy Prisma Json field — runtime value is correct
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const lineItemsJson = lineItems as any;
+
     const quote = await prisma.quote.create({
       data: {
         bookingId,
-        vendorId:    b.vendorId as string,
-        status:      "SENT",
-        lineItems:   lineItems as Prisma.InputJsonValue,
+        vendorId: b.vendorId as string,
+        status: "SENT",
+        lineItems: lineItemsJson,
         subtotal,
         gstRate,
         gstAmount,
         totalAmount,
         validUntil,
-        notes:  notes  ?? null,
-        terms:  terms  ?? null,
+        notes: notes ?? null,
+        terms: terms ?? null,
         version,
       },
     });
 
-    // Update booking status to QUOTE_SENT
     await prisma.booking.update({
       where: { id: bookingId },
       data:  { status: "QUOTE_SENT" },
     });
 
-    return NextResponse.json(
-      { 
-        success: true, 
-        message: "Quote sent successfully.", 
-        data: quote 
-      },
-      { status: 201 }
-    );
+    return NextResponse.json({ 
+      success: true, 
+      message: "Quote sent.", 
+      data: quote 
+    }, { status: 201 });
   } catch (err) {
     console.error("[SEND_QUOTE]", err);
     return NextResponse.json({ 
@@ -133,10 +112,7 @@ export async function POST(
   }
 }
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(req: NextRequest,{ params }: { params: Promise<{ id: string }> }){
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ 
@@ -156,32 +132,27 @@ export async function PATCH(
         event:  { 
           select: { 
             customer: { 
-              select: { 
-                userId: true
-               } 
-              } 
+              select: { userId: true } 
             } 
-          },
-        vendor: { 
-          select: { 
-            userId: true 
           } 
+        },
+        vendor: { 
+          select: { userId: true } 
         },
       },
     });
-    if (!booking) return NextResponse.json({ 
+    if(!booking) return NextResponse.json({ 
       success: false, 
       error: "Booking not found." 
     }, { status: 404 });
 
-    const b        = booking  as Record<string, unknown>;
-    const event    = b.event  as Record<string, unknown>;
+    const b        = booking as Record<string, unknown>;
+    const event    = b.event as Record<string, unknown>;
     const customer = event.customer as Record<string, unknown>;
     const vendorR  = b.vendor as Record<string, unknown>;
 
     const isCustomer = session.user.id === customer.userId;
     const isVendor   = session.user.id === vendorR.userId;
-
     if (!isCustomer && !isVendor) {
       return NextResponse.json({ 
         success: false, 
@@ -189,7 +160,6 @@ export async function PATCH(
       }, { status: 403 });
     }
 
-    // Get latest sent quote
     const quote = await prisma.quote.findFirst({
       where:   { bookingId, status: "SENT" },
       orderBy: { version: "desc" },
@@ -206,7 +176,8 @@ export async function PATCH(
       await prisma.$transaction(async (tx) => {
         await tx.quote.update({ where: { 
           id: quoteId 
-        }, data: { 
+        }, 
+        data: { 
           status: "ACCEPTED" 
         } 
       });
@@ -231,7 +202,7 @@ export async function PATCH(
       });
       await prisma.booking.update({ 
         where: { id: bookingId }, 
-        data: { status: "INQUIRY" }
+        data: { status: "INQUIRY" } 
       });
       return NextResponse.json({ 
         success: true, 
@@ -248,14 +219,9 @@ export async function PATCH(
         where: { id: bookingId }, 
         data: { status: "NEGOTIATION" } 
       });
-      // Save counter message
       if (message) {
         await prisma.message.create({
-          data: { 
-            bookingId, 
-            senderId: session.user.id, 
-            content: message 
-          },
+          data: { bookingId, senderId: session.user.id, content: message },
         });
       }
       return NextResponse.json({ 

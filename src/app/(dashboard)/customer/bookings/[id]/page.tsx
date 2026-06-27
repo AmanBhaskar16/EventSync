@@ -1,18 +1,16 @@
 
-// URL: /customer/bookings/[id]
-
-import { auth }              from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
-import { prisma }            from "@/lib/db/prisma";
-import Link                  from "next/link";
+import { prisma } from "@/lib/db/prisma";
+import Link from "next/link";
 import { ArrowLeft, CalendarDays, MapPin, Clock, CheckCircle, AlertCircle, CreditCard } from "lucide-react";
-import { Button }            from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge }             from "@/components/ui/badge";
-import { StarRating }           from "@/components/shared/star-rating";
+import { Badge } from "@/components/ui/badge";
+import { StarRating } from "@/components/shared/star-rating";
 import { BookingStatusStepper } from "@/components/vendors/booking-status-stepper";
-import { QuoteReview }          from "@/components/bookings/quote-review";
-import { MessageThread }        from "@/components/bookings/message-thread";
+import { QuoteReview } from "@/components/bookings/quote-review";
+import { MessageThread } from "@/components/bookings/message-thread";
 import { formatCurrency, formatDate, BOOKING_STATUS_LABELS, VENDOR_CATEGORY_LABELS } from "@/lib/utils";
 import { formatDateTime } from "@/lib/utils/format";
 import type { Metadata } from "next";
@@ -21,8 +19,8 @@ export const metadata: Metadata = { title: "Booking Details" };
 
 const MILESTONE_LABELS: Record<string, string> = {
   BOOKING_CONFIRMATION: "Booking Confirmation (30%)",
-  PRE_EVENT:            "Pre-Event Payment (40%)",
-  POST_EVENT:           "Post-Event Settlement (30%)",
+  PRE_EVENT: "Pre-Event Payment (40%)",
+  POST_EVENT: "Post-Event Settlement (30%)",
 };
 
 export default async function CustomerBookingDetailPage(
@@ -35,49 +33,146 @@ export default async function CustomerBookingDetailPage(
   const booking = await prisma.booking.findUnique({
     where: { id },
     select: {
-      id: true, status: true, agreedPrice: true, specialRequests: true,
-      guestCount: true, createdAt: true, confirmedAt: true, cancelReason: true,
+      id: true, 
+      status: true, 
+      agreedPrice: true, 
+      specialRequests: true,
+      guestCount: true, 
+      createdAt: true, 
+      confirmedAt: true, 
+      cancelReason: true,
       event: {
         select: {
-          id: true, title: true, type: true, eventDate: true, city: true,
-          customer: { select: { user: { select: { id: true, name: true } } } },
+          id: true, 
+          title: true, 
+          type: true, 
+          eventDate: true, 
+          city: true,
+          customer: { 
+            select: { 
+              user: { 
+                select: { 
+                  id: true, 
+                  name: true 
+                } 
+              } 
+            } 
+          },
         },
       },
       vendor: {
         select: {
-          id: true, businessName: true, category: true, city: true, state: true,
-          avgRating: true, responseTime: true, isVerified: true,
+          id: true, 
+          businessName: true, 
+          category: true, 
+          city: true, 
+          state: true,
+          avgRating: true, 
+          responseTime: true, 
+          isVerified: true,
         },
       },
       quotes: {
         orderBy: { version: "desc" },
         select: {
-          id: true, version: true, status: true, lineItems: true,
-          subtotal: true, gstRate: true, gstAmount: true,
-          totalAmount: true, validUntil: true, notes: true, terms: true,
+          id: true, 
+          version: true, 
+          status: true, 
+          lineItems: true,
+          subtotal: true, 
+          gstRate: true, 
+          gstAmount: true,
+          totalAmount: true, 
+          validUntil: true, 
+          notes: true, 
+          terms: true,
         },
       },
       payments: {
         orderBy: { createdAt: "asc" },
-        select: { id: true, milestone: true, amount: true, status: true, paidAt: true },
+        select: { 
+          id: true, 
+          milestone: true, 
+          amount: true, 
+          status: true, 
+          paidAt: true 
+        },
       },
-      review:  { select: { id: true, overallRating: true, comment: true } },
-      dispute: { select: { id: true, reason: true, status: true } },
+      review:  { 
+        select: { 
+          id: true, 
+          overallRating: true, 
+          comment: true 
+        } 
+      },
+      dispute: { 
+        select: { 
+          id: true, 
+          reason: true, 
+          status: true 
+        } 
+      },
     },
   });
 
   if (!booking) notFound();
 
-  const b     = booking as Record<string, unknown>;
+  const b  = booking as Record<string, unknown>;
   const event = b.event as Record<string, unknown>;
   const custUser = ((event.customer as Record<string, unknown>).user as Record<string, unknown>);
   if (session.user.id !== custUser.id && session.user.role !== "ADMIN") redirect("/customer/dashboard");
 
-  const vendor   = b.vendor   as { id: string; businessName: string; category: string; city: string; state: string; avgRating: number; responseTime: number; isVerified: boolean };
-  const quotes   = b.quotes   as Array<{ id: string; version: number; status: string; lineItems: Array<{ description: string; quantity: number; unitPrice: number; total: number }>; subtotal: number; gstRate: number; gstAmount: number; totalAmount: number; validUntil: string; notes: string | null; terms: string | null }>;
-  const payments = b.payments as Array<{ id: string; milestone: string; amount: number; status: string; paidAt: Date | null }>;
-  const review   = b.review   as { id: string; overallRating: number; comment: string | null } | null;
-  const dispute  = b.dispute  as { id: string; reason: string; status: string } | null;
+  const vendor   = b.vendor as { 
+    id: string; 
+    businessName: string; 
+    category: string; 
+    city: string; 
+    state: string; 
+    avgRating: number; 
+    responseTime: number; 
+    isVerified: boolean 
+  };
+
+  const quotes   = b.quotes  as Array<{ 
+    id: string; 
+    version: number; 
+    status: string; 
+    lineItems: Array<{ 
+      description: string; 
+      quantity: number; 
+      unitPrice: number; 
+      total: number 
+    }>; 
+    subtotal: number; 
+    gstRate: number; 
+    gstAmount: number; 
+    totalAmount: number; 
+    validUntil: string; 
+    notes: string | null; 
+    terms: string | null 
+  }>;
+
+  const payments = b.payments as Array<{ 
+    id: string; 
+    milestone: string; 
+    amount: number; 
+    status: string; 
+    paidAt: Date | null 
+  }>;
+
+  const review   = b.review as { 
+    id: string; 
+    overallRating: number; 
+    comment: string | null 
+  } | null;
+
+  const dispute  = b.dispute  as { 
+    id: string; 
+    reason: string; 
+    status: string 
+  } | null;
+
+  
   const latestQuote = quotes[0] ?? null;
 
   const STATUS_BADGE: Record<string, string> = {

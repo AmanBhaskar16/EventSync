@@ -12,18 +12,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge }     from "@/components/ui/badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
-type LineItem = { description: string; quantity: number; unitPrice: number; total: number };
+type LineItem = { 
+  description: string; 
+  quantity: number; 
+  unitPrice: number; 
+  total: number 
+};
 type QuoteData = {
-  id: string; version: number; status: string;
-  lineItems: LineItem[]; subtotal: number; gstRate: number;
-  gstAmount: number; totalAmount: number; validUntil: string;
-  notes: string | null; terms: string | null;
+  id: string; 
+  version: number; 
+  status: string;
+  lineItems: LineItem[]; 
+  subtotal: number; 
+  gstRate: number;
+  gstAmount: number; 
+  totalAmount: number; 
+  validUntil: string;
+  notes: string | null; 
+  terms: string | null;
 };
 
 export function QuoteReview({ bookingId, quote }: { bookingId: string; quote: QuoteData }) {
   const router = useRouter();
-  const [loading,        setLoading]        = useState<string | null>(null);
-  const [showCounter,    setShowCounter]    = useState(false);
+  const [loading,setLoading] = useState<string | null>(null);
+  const [showCounter, setShowCounter] = useState(false);
   const [counterMessage, setCounterMessage] = useState("");
 
   async function respond(action: "ACCEPT" | "REJECT" | "COUNTER") {

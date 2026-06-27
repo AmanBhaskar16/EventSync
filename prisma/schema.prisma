@@ -299,6 +299,7 @@ model InventoryItem {
   maintenanceQty Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  reservations  InventoryReservation[]
 
   @@map("inventory_items")
 }
@@ -334,4 +335,17 @@ model Message {
   createdAt DateTime @default(now())
  
   @@map("messages")
+}
+
+model InventoryReservation {
+  id          String        @id @default(cuid())
+  itemId      String
+  item        InventoryItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  bookingId   String
+  quantity    Int
+  date        DateTime
+  releasedAt  DateTime?
+  createdAt   DateTime      @default(now())
+ 
+  @@map("inventory_reservations")
 }

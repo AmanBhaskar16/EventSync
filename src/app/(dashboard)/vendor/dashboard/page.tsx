@@ -1,17 +1,15 @@
 
-// URL: /vendor/dashboard
-
-import { auth }     from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma }   from "@/lib/db/prisma";
-import Link         from "next/link";
+import { prisma } from "@/lib/db/prisma";
+import Link from "next/link";
 import {
   TrendingUp, CalendarDays, Users, Package,
   Star, AlertCircle, ArrowRight, IndianRupee,
 } from "lucide-react";
-import { Button }   from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge }    from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   getGreeting, formatCurrency, formatDate,
   BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS,
@@ -71,7 +69,13 @@ export default async function VendorDashboardPage() {
       bookings: {
         include: {
           event: {
-            select: { id: true, title: true, eventDate: true, city: true, type: true },
+            select: { 
+              id: true, 
+              title: true, 
+              eventDate: true, 
+              city: true, 
+              type: true 
+            },
           },
         },
         orderBy: { createdAt: "desc" },
@@ -101,8 +105,8 @@ export default async function VendorDashboardPage() {
     );
   }
 
-  const vendor     = raw as unknown as VendorRow;
-  const now        = new Date();
+  const vendor = raw as unknown as VendorRow;
+  const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const weekStart  = new Date(now);
   weekStart.setDate(now.getDate() - 7);
@@ -134,21 +138,32 @@ export default async function VendorDashboardPage() {
     icon: React.ElementType; color: string; href: string;
   }> = [
     {
-      label: "Total Revenue",    value: formatCurrency(totalRevenue),
-      icon: IndianRupee,         color: "text-primary",    href: "/vendor/finances",
+      label: "Total Revenue", 
+      value: formatCurrency(totalRevenue),
+      icon: IndianRupee, 
+      color: "text-primary",    
+      href: "/vendor/finances",
     },
     {
-      label: "This Month",       value: formatCurrency(monthRevenue),
-      icon: TrendingUp,          color: "text-blue-600",   href: "/vendor/finances",
+      label: "This Month",       
+      value: formatCurrency(monthRevenue),
+      icon: TrendingUp,          
+      color: "text-blue-600",   
+      href: "/vendor/finances",
     },
     {
-      label: "Pending",          value: pending.length,
-      icon: Users,               color: "text-amber-600",  href: "/vendor/bookings",
+      label: "Pending",          
+      value: pending.length,
+      icon: Users,               
+      color: "text-amber-600",  
+      href: "/vendor/bookings",
     },
     {
       label: "Avg Rating",
       value: vendor.avgRating > 0 ? `${vendor.avgRating.toFixed(1)} ★` : "No reviews yet",
-      icon: Star,                color: "text-yellow-500", href: "/vendor/reviews",
+      icon: Star,                
+      color: "text-yellow-500", 
+      href: "/vendor/reviews",
     },
   ];
 
@@ -398,10 +413,10 @@ export default async function VendorDashboardPage() {
           <CardContent className="pt-0 space-y-4">
             {[
               { label: "Total bookings received", value: vendor.totalBookings },
-              { label: "Completed events",        value: completed.length     },
-              { label: "Pending inquiries",       value: pending.length       },
-              { label: "Avg response time",       value: `${vendor.responseTime}h` },
-              { label: "Total reviews",           value: vendor.totalReviews  },
+              { label: "Completed events", value: completed.length },
+              { label: "Pending inquiries", value: pending.length },
+              { label: "Avg response time", value: `${vendor.responseTime}h` },
+              { label: "Total reviews", value: vendor.totalReviews  },
             ].map(({ label, value }) => (
               <div key={label} className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">{label}</span>

@@ -1,6 +1,6 @@
 
 // URL: wraps /customer/* /vendor/* /admin/*
-//
+
 // Server component — reads session on server, redirects if unauthenticated.
 // Renders the dark sidebar with role-aware nav links + main content area.
 //

@@ -34,7 +34,7 @@ export function SearchBar({
     timer.current = setTimeout(() => {
       const next = new URLSearchParams(params.toString());
       if (v.trim()) next.set("q", v.trim());
-      else          next.delete("q");
+      else next.delete("q");
       next.delete("page");
       router.push(`${pathname}?${next.toString()}`);
     }, 400);

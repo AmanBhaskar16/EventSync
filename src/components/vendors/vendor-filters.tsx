@@ -12,8 +12,15 @@ import { Badge }  from "@/components/ui/badge";
 import { cn, VENDOR_CATEGORY_LABELS } from "@/lib/utils";
 
 const CITIES = ["Mumbai","Delhi","Bangalore","Hyderabad","Chennai","Kolkata","Pune","Ahmedabad","Jaipur","Surat","Lucknow","Chandigarh"];
-const RATING_OPTIONS = [{ value: "4.5", label: "4.5+ Excellent" }, { value: "4", label: "4.0+ Very Good" }, { value: "3.5", label: "3.5+ Good" }];
-const SORT_OPTIONS   = [{ value: "rating", label: "Highest rated" }, { value: "bookings", label: "Most booked" }];
+const RATING_OPTIONS = [
+  { value: "4.5", label: "4.5+ Excellent" }, 
+  { value: "4", label: "4.0+ Very Good" }, 
+  { value: "3.5", label: "3.5+ Good" }
+];
+const SORT_OPTIONS   = [
+  { value: "rating", label: "Highest rated" }, 
+  { value: "bookings", label: "Most booked" }
+];
 
 export function VendorFilters({ className }: { className?: string }) {
   const router   = useRouter();

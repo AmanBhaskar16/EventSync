@@ -1,13 +1,13 @@
 
 // URL: /vendor/bookings — Kanban-style pipeline list
 
-import { auth }     from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma }   from "@/lib/db/prisma";
-import Link         from "next/link";
+import { prisma } from "@/lib/db/prisma";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge }   from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   formatDate, formatCurrency,
   BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS,

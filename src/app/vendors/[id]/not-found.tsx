@@ -1,7 +1,7 @@
-import Link        from "next/link";
+import Link from "next/link";
 import { SearchX } from "lucide-react";
-import { Button }  from "@/components/ui/button";
-import { Navbar }  from "@/components/shared/navbar";
+import { Button } from "@/components/ui/button";
+import { Navbar } from "@/components/shared/navbar";
 
 export default function VendorNotFound() {
   return (

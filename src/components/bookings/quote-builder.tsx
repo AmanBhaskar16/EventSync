@@ -29,12 +29,12 @@ const EMPTY_LINE: LineItem = {
 
 export function QuoteBuilder({ bookingId }: { bookingId: string }) {
   const router = useRouter();
-  const [lines,     setLines]     = useState<LineItem[]>([{ ...EMPTY_LINE }]);
-  const [gstRate,   setGstRate]   = useState(18);
+  const [lines,     setLines] = useState<LineItem[]>([{ ...EMPTY_LINE }]);
+  const [gstRate,   setGstRate] = useState(18);
   const [validDays, setValidDays] = useState(7);
-  const [notes,     setNotes]     = useState("");
-  const [terms,     setTerms]     = useState("50% advance required on confirmation.");
-  const [loading,   setLoading]   = useState(false);
+  const [notes,     setNotes] = useState("");
+  const [terms,     setTerms]  = useState("50% advance required on confirmation.");
+  const [loading,   setLoading] = useState(false);
 
   function updateLine(idx: number, field: keyof LineItem, value: string | number) {
     setLines((prev) => {

@@ -1,17 +1,15 @@
 
-// URL: /customer/dashboard
-
-import { auth }     from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma }   from "@/lib/db/prisma";
-import Link         from "next/link";
+import { prisma } from "@/lib/db/prisma";
+import Link from "next/link";
 import {
   CalendarDays, Users, CreditCard,
   TrendingUp, Plus, ArrowRight,
 } from "lucide-react";
-import { Button }   from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge }    from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   getGreeting, formatDate, formatCurrency,
   BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS,
@@ -38,8 +36,17 @@ type BookingRow = {
   status:      string;
   agreedPrice: number | null;
   createdAt:   Date;
-  event:  { id: string; title: string; eventDate: Date };
-  vendor: { id: string; businessName: string; category: string; city: string };
+  event:  { 
+    id: string; 
+    title: string; 
+    eventDate: Date 
+  };
+  vendor: { 
+    id: string; 
+    businessName: string; 
+    category: string; 
+    city: string 
+  };
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -71,24 +78,51 @@ export default async function CustomerDashboardPage() {
     // Upcoming + recent events with booking count
     prisma.event.findMany({
       where:   { customerId: customer.id },
-      include: { bookings: { select: { id: true, status: true } } },
+      include: { 
+        bookings: { 
+          select: { 
+            id: true, 
+            status: true 
+          } 
+        } 
+      },
       orderBy: { eventDate: "desc" },
-      take:    10,
+      take: 10,
     }),
     // Recent bookings with vendor + event info
     prisma.booking.findMany({
       where:   { event: { customerId: customer.id } },
       include: {
-        event:  { select: { id: true, title: true, eventDate: true } },
-        vendor: { select: { id: true, businessName: true, category: true, city: true } },
+        event:  { 
+          select: { 
+            id: true, 
+            title: true, 
+            eventDate: true 
+          } 
+        },
+        vendor: { 
+          select: { 
+            id: true, 
+            businessName: true, 
+            category: true, 
+            city: true 
+          } 
+        },
       },
       orderBy: { createdAt: "desc" },
       take:    5,
     }),
     // Total confirmed spend
     prisma.payment.aggregate({
-      where:  { booking: { event: { customerId: customer.id } }, status: "PAID" },
-      _sum:   { amount: true },
+      where:  { 
+        booking: { 
+          event: { 
+            customerId: customer.id 
+          } 
+        }, 
+        status: "PAID" 
+      },
+      _sum: { amount: true },
     }),
   ]);
 

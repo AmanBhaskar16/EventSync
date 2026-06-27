@@ -1,14 +1,12 @@
 
-// URL: /customer/bookings
-
-import { auth }     from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma }   from "@/lib/db/prisma";
-import Link         from "next/link";
+import { prisma } from "@/lib/db/prisma";
+import Link from "next/link";
 import { CalendarDays, ArrowRight, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge }   from "@/components/ui/badge";
-import { Button }  from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   formatDate, formatCurrency,
   BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS,
@@ -25,19 +23,47 @@ export default async function CustomerBookingsPage() {
     where: { userId: session.user.id },
     select: { id: true },
   });
+
   if (!customer) redirect("/customer/dashboard");
 
   const bookings = await prisma.booking.findMany({
-    where:   { event: { customerId: (customer as { id: string }).id } },
+    where:   { 
+      event: { 
+        customerId: (customer as { id: string }).id 
+      } 
+    },
     orderBy: { createdAt: "desc" },
     select: {
-      id: true, status: true, agreedPrice: true, createdAt: true,
-      event:  { select: { id: true, title: true, eventDate: true, city: true, type: true } },
-      vendor: { select: { id: true, businessName: true, category: true, city: true } },
+      id: true, 
+      status: true, 
+      agreedPrice: true, 
+      createdAt: true,
+      event:  { 
+        select: { 
+          id: true, 
+          title: true, 
+          eventDate: true, 
+          city: true, 
+          type: true 
+        } 
+      },
+      vendor: { 
+        select: { 
+          id: true, 
+          businessName: true, 
+          category: true, 
+          city: true 
+        } 
+      },
       quotes: {
         orderBy: { version: "desc" },
         take:    1,
-        select:  { id: true, totalAmount: true, status: true, version: true },
+        select:  { 
+          id: true, 
+          totalAmount: true, 
+          status: true, 
+          version: true 
+        },
       },
     },
   });
@@ -51,9 +77,9 @@ export default async function CustomerBookingsPage() {
   };
 
   for (const b of bookings) {
-    if (["COMPLETED"].includes(b.status))                        grouped.Completed.push(b);
-    else if (["CANCELLED", "DISPUTED"].includes(b.status))       grouped.Cancelled.push(b);
-    else                                                         grouped.Active.push(b);
+    if (["COMPLETED"].includes(b.status)) grouped.Completed.push(b);
+    else if (["CANCELLED", "DISPUTED"].includes(b.status)) grouped.Cancelled.push(b);
+    else grouped.Active.push(b);
   }
 
   return (

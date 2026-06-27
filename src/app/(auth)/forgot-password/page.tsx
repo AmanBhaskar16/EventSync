@@ -1,8 +1,3 @@
-// src/app/(auth)/forgot-password/page.tsx
-// URL: /forgot-password
-//
-// Step 1: User enters email → simulated API call → success screen.
-// (Actual email sending wired in a later feature when email provider is configured.)
 
 "use client";
 

@@ -1,8 +1,11 @@
 import { cn } from "@/lib/utils";
 
 interface StarRatingProps {
-  rating: number; max?: number;
-  size?: "sm" | "md" | "lg"; showValue?: boolean; className?: string;
+  rating: number;
+  max?: number;
+  size?: "sm" | "md" | "lg"; 
+  showValue?: boolean; 
+  className?: string;
 }
 
 export function StarRating({ rating, max = 5, size = "md", showValue = true, className }: StarRatingProps) {

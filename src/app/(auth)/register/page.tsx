@@ -1,6 +1,4 @@
-// src/app/(auth)/register/page.tsx
-// URL: /register
-//
+
 // 2-step registration:
 //   Step 1 — choose role: Customer or Vendor
 //   Step 2 — fill name, email, phone, password
@@ -9,19 +7,19 @@
 
 "use client";
 
-import { useState }           from "react";
-import Link                   from "next/link";
-import { useRouter }          from "next/navigation";
-import { toast }              from "sonner";
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   Eye, EyeOff, UserPlus,
   Building2, User, CheckCircle2, ArrowLeft,
 } from "lucide-react";
-import { Button }             from "@/components/ui/button";
-import { Input }              from "@/components/ui/input";
-import { FormField }          from "@/components/ui/form-field";
-import { registerSchema }     from "@/lib/validators";
-import { cn }                 from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FormField } from "@/components/ui/form-field";
+import { registerSchema } from "@/lib/validators";
+import { cn } from "@/lib/utils";
 import type { RegisterInput } from "@/lib/validators";
 
 type Role = "CUSTOMER" | "VENDOR";
@@ -36,31 +34,40 @@ type FormData = {
 };
 
 const INITIAL_FORM: FormData = {
-  name: "", email: "", phone: "", password: "", confirmPassword: "", role: "CUSTOMER",
+  name: "", 
+  email: "",
+  phone: "", 
+  password: "", 
+  confirmPassword: "", 
+  role: "CUSTOMER",
 };
 
 // Password strength score 0–5
 function getPasswordStrength(password: string) {
   let score = 0;
-  if (password.length >= 8)            score++;
-  if (password.length >= 12)           score++;
-  if (/[A-Z]/.test(password))         score++;
-  if (/[0-9]/.test(password))         score++;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
   const labels = ["", "Weak", "Fair", "Good", "Strong", "Very strong"];
   const colors = ["", "bg-red-500", "bg-amber-500", "bg-yellow-400", "bg-green-500", "bg-green-600"];
-  return { score, label: labels[score], color: colors[score] };
+  return { 
+    score, 
+    label: labels[score], 
+    color: colors[score] 
+  };
 }
 
 export default function RegisterPage() {
   const router = useRouter();
 
-  const [step, setStep]         = useState<1 | 2>(1);
-  const [form, setForm]         = useState<FormData>(INITIAL_FORM);
-  const [errors, setErrors]     = useState<Partial<Record<keyof FormData, string>>>({});
+  const [step, setStep] = useState<1 | 2>(1);
+  const [form, setForm] = useState<FormData>(INITIAL_FORM);
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [showPass, setShowPass] = useState(false);
   const [showConf, setShowConf] = useState(false);
-  const [loading, setLoading]   = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function set<K extends keyof FormData>(field: K, value: FormData[K]) {
     setForm((f) => ({ ...f, [field]: value }));

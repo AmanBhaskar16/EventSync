@@ -14,10 +14,10 @@
 //   5. Return success → client redirects to /login
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma }                    from "@/lib/db/prisma";
-import { hashPassword }              from "@/lib/auth";
-import { registerSchema }            from "@/lib/validators";
-import type { ApiResponse }          from "@/types";
+import { prisma } from "@/lib/db/prisma";
+import { hashPassword } from "@/lib/auth";
+import { registerSchema } from "@/lib/validators";
+import type { ApiResponse } from "@/types";
 
 export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse>> {
   try {

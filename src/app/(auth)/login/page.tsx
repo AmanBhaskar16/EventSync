@@ -1,22 +1,20 @@
-// src/app/(auth)/login/page.tsx
-// URL: /login
-//
+
 // Login form — email + password.
 // On success: reads session role → redirects to role dashboard.
 // Demo buttons pre-fill credentials for quick testing.
 
 "use client";
 
-import { useState }              from "react";
-import Link                      from "next/link";
+import { useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn }                from "next-auth/react";
-import { toast }                 from "sonner";
-import { Eye, EyeOff, LogIn }    from "lucide-react";
-import { Button }                from "@/components/ui/button";
-import { Input }                 from "@/components/ui/input";
-import { FormField }             from "@/components/ui/form-field";
-import { loginSchema }           from "@/lib/validators";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FormField } from "@/components/ui/form-field";
+import { loginSchema } from "@/lib/validators";
 
 // Where each role goes after login
 const ROLE_HOME: Record<string, string> = {
@@ -37,10 +35,10 @@ export default function LoginPage() {
   const params      = useSearchParams();
   const callbackUrl = params.get("callbackUrl");
 
-  const [form, setForm]         = useState({ email: "", password: "" });
-  const [errors, setErrors]     = useState<Partial<typeof form>>({});
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState<Partial<typeof form>>({});
   const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading]   = useState(false);
+  const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
   // Client-side Zod validation
@@ -83,8 +81,8 @@ export default function LoginPage() {
 
     // Get role from session to redirect correctly
     const sessionRes = await fetch("/api/auth/session");
-    const session    = await sessionRes.json();
-    const role       = session?.user?.role as string | undefined;
+    const session = await sessionRes.json();
+    const role = session?.user?.role as string | undefined;
 
     const destination =
       callbackUrl && callbackUrl.startsWith("/")

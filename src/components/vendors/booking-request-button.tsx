@@ -1,4 +1,3 @@
-// src/components/vendors/booking-request-button.tsx
 // Inline inquiry form on vendor profile page
 
 "use client";
@@ -15,16 +14,23 @@ import { FormField } from "@/components/ui/form-field";
 export function BookingRequestButton({ vendorId, vendorName }: { vendorId: string; vendorName: string }) {
   const router = useRouter();
   const { data: session } = useSession();
-  const [expanded,  setExpanded]  = useState(false);
-  const [loading,   setLoading]   = useState(false);
-  const [form, setForm] = useState({ eventDate: "", guestCount: "", requirements: "" });
+  const [expanded,  setExpanded] = useState(false);
+  const [loading,   setLoading] = useState(false);
+  const [form, setForm] = useState({ 
+    eventDate: "", 
+    guestCount: "", 
+    requirements: "" 
+  });
 
   function handleClick() {
-    if (!session?.user) { router.push(`/login?callbackUrl=/vendors/${vendorId}`); return; }
-    if (session.user.role !== "CUSTOMER") { 
+    if(!session?.user) { 
+      router.push(`/login?callbackUrl=/vendors/${vendorId}`); 
+      return; 
+    }
+    if(session.user.role !== "CUSTOMER") { 
       toast.error("Only customers can request bookings.");
        return;
-       }
+    }
     setExpanded(true);
   }
 
@@ -40,8 +46,8 @@ export function BookingRequestButton({ vendorId, vendorName }: { vendorId: strin
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           vendorId,
-          eventDate:       form.eventDate,
-          guestCount:      form.guestCount ? parseInt(form.guestCount) : undefined,
+          eventDate: form.eventDate,
+          guestCount: form.guestCount ? parseInt(form.guestCount) : undefined,
           specialRequests: form.requirements || undefined,
         }),
       });

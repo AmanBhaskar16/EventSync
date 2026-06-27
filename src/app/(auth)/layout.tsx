@@ -1,6 +1,4 @@
-// src/app/(auth)/layout.tsx
-// URL: wraps /login  /register  /forgot-password
-//
+
 // Split-panel layout:
 //   Left  (hidden on mobile) — brand panel with gradient, stats, testimonial
 //   Right — form area (children rendered here)
@@ -11,12 +9,15 @@
 //   (auth)/register/page.tsx    → /register
 //   (auth)/forgot-password/...  → /forgot-password
 
-import Link            from "next/link";
+import Link from "next/link";
 import { CalendarCheck } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: { default: "Sign In", template: "%s | EventSync" },
+  title: { 
+    default: "Sign In", 
+    template: "%s | EventSync" 
+  },
 };
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {

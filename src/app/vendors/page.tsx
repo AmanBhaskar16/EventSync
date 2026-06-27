@@ -1,15 +1,14 @@
 
-// URL: /vendors
 // Public page — search + filter sidebar + results grid
 
-import { Suspense }   from "react";
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Users }     from "lucide-react";
-import { Navbar }    from "@/components/shared/navbar";
+import { Users } from "lucide-react";
+import { Navbar } from "@/components/shared/navbar";
 import { SearchBar } from "@/components/shared/search-bar";
 import { VendorFilters } from "@/components/vendors/vendor-filters";
 import { VendorSearchResults } from "@/components/vendors/vendor-search-results";
-import { Badge }     from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { VENDOR_CATEGORY_LABELS } from "@/lib/utils";
 import Link from "next/link";
 
@@ -19,14 +18,14 @@ export const metadata: Metadata = {
 };
 
 const FEATURED_CATEGORIES = [
-  { key: "CATERING",      emoji: "🍽️" },
-  { key: "DECOR",         emoji: "🌸" },
-  { key: "PHOTOGRAPHY",   emoji: "📸" },
-  { key: "VENUE",         emoji: "🏛️" },
-  { key: "DJ_MUSIC",      emoji: "🎵" },
+  { key: "CATERING",emoji: "🍽️" },
+  { key: "DECOR", emoji: "🌸" },
+  { key: "PHOTOGRAPHY", emoji: "📸" },
+  { key: "VENUE", emoji: "🏛️" },
+  { key: "DJ_MUSIC",emoji: "🎵" },
   { key: "MAKEUP_ARTIST", emoji: "💄" },
-  { key: "FLORALS",       emoji: "💐" },
-  { key: "MEHENDI",       emoji: "🌿" },
+  { key: "FLORALS", emoji: "💐" },
+  { key: "MEHENDI", emoji: "🌿" },
 ];
 
 function ResultsSkeleton() {

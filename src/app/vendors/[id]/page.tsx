@@ -1,20 +1,19 @@
 
-// URL: /vendors/[id]
 // Full vendor profile — portfolio, services, reviews, booking CTA
 
 import type { Metadata } from "next";
-import { notFound }      from "next/navigation";
-import Link              from "next/link";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 import {
   MapPin, Clock, CheckCircle, Star, Calendar, Users,
   ArrowLeft, MessageSquare, Package, BadgeCheck, Banknote, Phone,
 } from "lucide-react";
-import { Navbar }      from "@/components/shared/navbar";
-import { StarRating }  from "@/components/shared/star-rating";
+import { Navbar } from "@/components/shared/navbar";
+import { StarRating } from "@/components/shared/star-rating";
 import { BookingRequestButton } from "@/components/vendors/booking-request-button";
-import { Button }      from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge }       from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatDate, VENDOR_CATEGORY_LABELS } from "@/lib/utils";
 import { formatRelativeTime } from "@/lib/utils/format";
 
@@ -79,7 +78,10 @@ async function getVendor(id: string): Promise<VendorProfile | null> {
     const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
     const res  = await fetch(`${base}/api/vendors/${id}`, { next: { revalidate: 60 } });
     if (!res.ok) return null;
-    const data = await res.json() as { success: boolean; data?: VendorProfile };
+    const data = await res.json() as { 
+      success: boolean; 
+      data?: VendorProfile 
+    };
     return data.success ? data.data ?? null : null;
   } catch { return null; }
 }

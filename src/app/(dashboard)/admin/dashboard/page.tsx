@@ -1,20 +1,18 @@
 
-// URL: /admin/dashboard
-
 // Server component — fetches platform-wide stats from DB.
 // Shows GMV, vendor counts, KYC queue, open disputes.
 
-import { auth }          from "@/lib/auth";
-import { redirect }      from "next/navigation";
-import { prisma }        from "@/lib/db/prisma";
-import Link              from "next/link";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db/prisma";
+import Link from "next/link";
 import {
   Users, Building2, TrendingUp, AlertCircle,
   UserCheck, CreditCard, ArrowRight,
 } from "lucide-react";
-import { Button }        from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge }         from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -48,7 +46,16 @@ export default async function AdminDashboardPage() {
     }),
     prisma.dispute.findMany({
       where:   { status: "OPEN" },
-      include: { booking: { include: { vendor: { select: { businessName: true } } } } },
+      include: { booking: { 
+        include: { 
+          vendor: { 
+            select: { 
+              businessName: true 
+            } 
+          } 
+        } 
+      } 
+    },
       orderBy: { createdAt: "desc" },
       take:    5,
     }),
@@ -61,11 +68,16 @@ export default async function AdminDashboardPage() {
   const totalGMV = Number((gmvResult as { _sum: { amount?: number } })._sum.amount ?? 0);
 
   const vendors  = pendingVendors as unknown as Array<{
-    id: string; businessName: string; kycStatus: string; createdAt: Date;
+    id: string; 
+    businessName: string; 
+    kycStatus: string; 
+    createdAt: Date;
     user: { email: string };
   }>;
   const disputes = openDisputes as unknown as Array<{
-    id: string; reason: string; status: string;
+    id: string; 
+    reason: string; 
+    status: string;
     booking: { vendor: { businessName: string } };
   }>;
 

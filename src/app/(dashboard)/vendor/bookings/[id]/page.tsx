@@ -1,17 +1,16 @@
 
-// URL: /vendor/bookings/[id]
 // Vendor view: quote builder + message thread + booking info
 
-import { auth }     from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
-import { prisma }   from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/prisma";
 import Link from "next/link";
 import {
   ArrowLeft, CalendarDays, MapPin, Users, Clock,
 } from "lucide-react";
-import { Button }  from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge }   from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { BookingStatusStepper } from "@/components/vendors/booking-status-stepper";
 import { QuoteBuilder } from "@/components/bookings/quote-builder";
 import { MessageThread } from "@/components/bookings/message-thread";

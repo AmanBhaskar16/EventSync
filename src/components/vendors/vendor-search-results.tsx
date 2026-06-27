@@ -1,4 +1,3 @@
-// src/components/vendors/vendor-search-results.tsx
 // Client component — fetches /api/vendors and renders grid + pagination
 
 "use client";
@@ -13,15 +12,16 @@ type Pagination = { total: number; page: number; pageSize: number; totalPages: n
 
 export function VendorSearchResults() {
   const searchParams = useSearchParams();
-  const router       = useRouter();
-  const pathname     = usePathname();
-  const [vendors,    setVendors]    = useState<VendorCardData[]>([]);
-  const [pagination, setPagination] = useState<Pagination | null>(null);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const [vendors,setVendors] = useState<VendorCardData[]>([]);
+  const [pagination,setPagination] = useState<Pagination | null>(null);
+  const [loading,setLoading] = useState(true);
+  const [error, setError]= useState("");
 
   const fetchVendors = useCallback(async () => {
-    setLoading(true); setError("");
+    setLoading(true); 
+    setError("");
     try {
       const res  = await fetch(`/api/vendors?${searchParams.toString()}`);
       const data = await res.json() as { 
