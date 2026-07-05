@@ -1,6 +1,4 @@
 
-// URL: GET /api/vendors/[id]
-
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 
@@ -49,7 +47,7 @@ export async function GET(
             description: true, 
             basePrice: true, 
             unit: true,
-            addons: { 
+            serviceAddons : { 
               select: { 
                 id: true, 
                 name: true, 

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 
 type LineItem = { description: string; quantity: number; unitPrice: number; total: number };
 
-export async function POST(req: NextRequest,{ params }: { params: Promise<{ id: string }> }) {
+export const POST = async (req: NextRequest,{ params }: { params: Promise<{ id: string }> }) => {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ success: false, error: "Unauthenticated." }, { status: 401 });
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest,{ params }: { params: Promise<{ id: 
   }
 }
 
-export async function PATCH(req: NextRequest,{ params }: { params: Promise<{ id: string }> }){
+export const PATCH = async (req: NextRequest,{ params }: { params: Promise<{ id: string }> }) => {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ 

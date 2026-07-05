@@ -1,4 +1,4 @@
-// URL: GET /api/vendors
+
 // Query params: q, category, city, minRating, minPrice, maxPrice, sortBy, page
 
 import { NextRequest, NextResponse } from "next/server";
@@ -12,14 +12,14 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
 
-    const q         = searchParams.get("q")?.trim()        ?? "";
-    const category  = searchParams.get("category")         ?? "";
-    const city      = searchParams.get("city")?.trim()     ?? "";
+    const q = searchParams.get("q")?.trim() ?? "";
+    const category  = searchParams.get("category") ?? "";
+    const city = searchParams.get("city")?.trim() ?? "";
     const minRating = parseFloat(searchParams.get("minRating") ?? "0");
-    const minPrice  = parseFloat(searchParams.get("minPrice")  ?? "0");
+    const minPrice  = parseFloat(searchParams.get("minPrice") ?? "0");
     const maxPrice  = parseFloat(searchParams.get("maxPrice")  ?? "0");
-    const sortBy    = searchParams.get("sortBy")            ?? "rating";
-    const page      = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
+    const sortBy = searchParams.get("sortBy")            ?? "rating";
+    const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
 
     // Build where clause
     const where: Record<string, unknown> = {
@@ -28,13 +28,13 @@ export async function GET(req: NextRequest) {
     };
 
     if (category) where.category = category;
-    if (city)     where.city = { contains: city, mode: "insensitive" };
+    if (city) where.city = { contains: city, mode: "insensitive" };
     if (minRating > 0) where.avgRating = { gte: minRating };
     if (q) {
       where.OR = [
         { businessName: { contains: q, mode: "insensitive" } },
         { description:  { contains: q, mode: "insensitive" } },
-        { city:         { contains: q, mode: "insensitive" } },
+        { city: { contains: q, mode: "insensitive" } },
       ];
     }
     if (minPrice > 0 || maxPrice > 0) {
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     const orderBy: Record<string, "asc" | "desc"> =
       sortBy === "bookings" ? { totalBookings: "desc" }
       : sortBy === "price"  ? { avgRating: "desc" }
-      :                       { avgRating: "desc" };
+      : { avgRating: "desc" };
 
     const [vendors, total] = await Promise.all([
       prisma.vendor.findMany({

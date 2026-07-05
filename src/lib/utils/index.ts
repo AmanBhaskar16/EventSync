@@ -86,3 +86,18 @@ export const VENDOR_CATEGORY_LABELS: Record<string, string> = {
   ANCHOR_HOST:       "Anchor & Host",
   OTHER:             "Other",
 };
+
+export const EVENT_TYPE_LABELS: Record<string, string> = {
+  WEDDING:        "Wedding",
+  BIRTHDAY:       "Birthday",
+  BACHELORETTE:   "Bachelorette",
+  BACHELOR:       "Bachelor Party",
+  ANNIVERSARY:    "Anniversary",
+  CORPORATE:      "Corporate",
+  KITTY_PARTY:    "Kitty Party",
+  REUNION:        "Reunion",
+  BABY_SHOWER:    "Baby Shower",
+  ENGAGEMENT:     "Engagement",
+  COCKTAIL_PARTY: "Cocktail Party",
+  OTHER:          "Other",
+};

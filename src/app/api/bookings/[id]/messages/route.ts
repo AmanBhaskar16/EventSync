@@ -8,10 +8,10 @@ import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(
+export const GET = async (
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ 
@@ -100,10 +100,10 @@ export async function GET(
   }
 }
 
-export async function POST(
+export const POST = async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ 

@@ -23,7 +23,7 @@ export default function NewInventoryPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  function validate() {
+  const validate = () => {
     const e: Record<string, string> = {};
     if(!form.name.trim()) e.name = "Name is required.";
     if(!form.totalQuantity || Number(form.totalQuantity)<1) e.totalQuantity = "Quantity must be at least 1.";
@@ -32,7 +32,7 @@ export default function NewInventoryPage() {
     return Object.keys(e).length === 0;
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);

@@ -19,7 +19,7 @@ import { hashPassword } from "@/lib/auth";
 import { registerSchema } from "@/lib/validators";
 import type { ApiResponse } from "@/types";
 
-export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse>> {
+export const POST = async (req: NextRequest): Promise<NextResponse<ApiResponse>> => {
   try {
     const body   = await req.json();
     const parsed = registerSchema.safeParse(body);
