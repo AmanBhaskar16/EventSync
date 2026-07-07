@@ -3,12 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth }   from "@/lib/auth";
 import { prisma } from "@/lib/db/prisma";
 
-type LineItem = { description: string; quantity: number; unitPrice: number; total: number };
+type LineItem = { 
+  description: string; 
+  quantity: number; 
+  unitPrice: number; 
+  total: number 
+};
 
 export const POST = async (req: NextRequest,{ params }: { params: Promise<{ id: string }> }) => {
   try {
     const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false, error: "Unauthenticated." }, { status: 401 });
+    if (!session?.user) return NextResponse.json({ 
+      success: false, 
+      error: "Unauthenticated." 
+    }, { status: 401 });
 
     const { id: bookingId } = await params;
 
@@ -146,8 +154,8 @@ export const PATCH = async (req: NextRequest,{ params }: { params: Promise<{ id:
       error: "Booking not found." 
     }, { status: 404 });
 
-    const b        = booking as Record<string, unknown>;
-    const event    = b.event as Record<string, unknown>;
+    const b  = booking as Record<string, unknown>;
+    const event  = b.event as Record<string, unknown>;
     const customer = event.customer as Record<string, unknown>;
     const vendorR  = b.vendor as Record<string, unknown>;
 

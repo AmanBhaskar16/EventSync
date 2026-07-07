@@ -111,6 +111,18 @@ enum QuoteStatus {
   EXPIRED
 }
 
+enum StaffRole {
+  MANAGER
+  CHEF
+  ASSISTANT
+  DRIVER
+  COORDINATOR
+  PHOTOGRAPHER
+  DECORATOR
+  SECURITY
+  OTHER
+}
+
 // ─────────────────────────────────────────────
 // MODELS
 // ─────────────────────────────────────────────
@@ -186,6 +198,7 @@ model Vendor {
   inventoryItems InventoryItem[]
   services       VendorService[] 
   reviews        Review[]
+  staff          StaffMember[]
 
   @@map("vendors")
 }
@@ -403,4 +416,34 @@ model Review {
   updatedAt       DateTime @updatedAt
 
   @@map("reviews")
+}
+
+model StaffMember {
+  id         String     @id @default(cuid())
+  vendorId   String
+  vendor     Vendor     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name       String
+  role       StaffRole  @default(OTHER)
+  phone      String?
+  email      String?
+  dailyRate  Float?
+  isActive   Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  assignments StaffAssignment[]
+
+  @@map("staff_members")
+}
+
+model StaffAssignment {
+  id            String      @id @default(cuid())
+  staffMemberId String
+  staff         StaffMember @relation(fields: [staffMemberId], references: [id], onDelete: Cascade)
+  bookingId     String
+  date          DateTime
+  notes         String?
+  createdAt     DateTime    @default(now())
+
+  @@map("staff_assignments")
 }
