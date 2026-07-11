@@ -2,36 +2,58 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CustomerActionButtons } from "@/components/bookings/customer-action-buttons";
+import type { CustomerBookingDetail } from "../_queries";
 
-const TERMINAL_STATUSES = ["CANCELLED", "COMPLETED", "DISPUTED"];
+const DISPUTE_ELIGIBLE = ["CONFIRMED", "IN_PROGRESS", "COMPLETED"];
 
-export const ActionsCard = ({
+export function ActionsCard({
   bookingId,
   status,
-  hasReview,
-  hasDispute,
+  payments,
+  review,
+  dispute,
 }: {
   bookingId: string;
   status: string;
-  hasReview: boolean;
-  hasDispute: boolean;
-}) => {
+  payments: CustomerBookingDetail["payments"];
+  review: CustomerBookingDetail["review"];
+  dispute: CustomerBookingDetail["dispute"];
+}) {
+  const canRaiseDispute = DISPUTE_ELIGIBLE.includes(status) && !dispute;
+
+  const allPaid =
+    status === "COMPLETED" &&
+    !review &&
+    payments.length === 3 &&
+    payments.every((p) => p.status === "PAID");
+
+  const showPaymentPrompt = status === "COMPLETED" && !review && !allPaid;
+
   return (
     <Card>
       <CardHeader className="pb-3"><CardTitle className="text-base">Actions</CardTitle></CardHeader>
       <CardContent className="space-y-2">
-        {!TERMINAL_STATUSES.includes(status) && (
-          <Button variant="outline" size="sm" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10">
-            Cancel booking
+        <CustomerActionButtons bookingId={bookingId} status={status} />
+
+        {canRaiseDispute && (
+          <Button variant="outline" size="sm" className="w-full" asChild>
+            <Link href={`/customer/bookings/${bookingId}/dispute`}>Raise a dispute</Link>
           </Button>
         )}
-        {status === "COMPLETED" && !hasReview && (
+
+        {allPaid && (
           <Button size="sm" className="w-full" asChild>
             <Link href={`/customer/bookings/${bookingId}/review`}>Leave a review</Link>
           </Button>
         )}
-        {status === "COMPLETED" && !hasDispute && (
-          <Button variant="outline" size="sm" className="w-full">Raise a dispute</Button>
+
+        {showPaymentPrompt && (
+          <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-center">
+            <p className="text-xs text-amber-700 font-medium">
+              Complete all 3 payments to leave a review
+            </p>
+          </div>
         )}
       </CardContent>
     </Card>

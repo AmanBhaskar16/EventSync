@@ -1,4 +1,3 @@
-
 import { prisma } from "@/lib/db/prisma";
 import { notFound, redirect } from "next/navigation";
 
@@ -28,7 +27,16 @@ export async function getCustomerBookingDetail(id: string, userId: string, userR
           type: true,
           eventDate: true,
           city: true,
-          customer: { select: { user: { select: { id: true, name: true } } } },
+          customer: { 
+            select: { 
+              user: { 
+                select: { 
+                  id: true, 
+                  name: true 
+                } 
+              } 
+            } 
+          },
         },
       },
       vendor: {
@@ -61,26 +69,57 @@ export async function getCustomerBookingDetail(id: string, userId: string, userR
       },
       payments: {
         orderBy: { createdAt: "asc" },
-        select: { id: true, milestone: true, amount: true, status: true, paidAt: true },
+        select: { 
+          id: true, 
+          milestone: true, 
+          amount: true, 
+          status: true, 
+          paidAt: true 
+        },
       },
-      review: { select: { id: true, overallRating: true, comment: true } },
-      dispute: { select: { id: true, reason: true, status: true } },
+      review:  { 
+        select: { 
+          id: true, 
+          overallRating: true, 
+          comment: true 
+        } 
+      },
+      dispute: { 
+        select: { 
+          id: true, 
+          reason: true, 
+          status: true 
+        } 
+      },
     },
   });
 
   if (!booking) notFound();
 
-  const ownerId = booking.event.customer.user.id;
-  if (userId !== ownerId && userRole !== "ADMIN") redirect("/customer/dashboard");
+  if (booking.event.customer.user.id !== userId && userRole !== "ADMIN") {
+    redirect("/customer/dashboard");
+  }
 
-  // cast each quote's lineItems from Prisma's JsonValue → proper LineItem[]
   const quotes = booking.quotes.map((q) => ({
     ...q,
-    lineItems: q.lineItems as unknown as LineItem[],
+    lineItems:  q.lineItems  as unknown as LineItem[],
     validUntil: q.validUntil.toISOString(),
   }));
+
   return {
-    ...booking,
+    id:              booking.id,
+    status:          booking.status,
+    agreedPrice:     booking.agreedPrice,
+    specialRequests: booking.specialRequests,
+    guestCount:      booking.guestCount,
+    createdAt:       booking.createdAt,
+    confirmedAt:     booking.confirmedAt,
+    cancelReason:    booking.cancelReason,
+    event:           booking.event,
+    vendor:          booking.vendor,
+    payments:        booking.payments,
+    review:          booking.review,
+    dispute:         booking.dispute,
     quotes,
     latestQuote: quotes[0] ?? null,
   };

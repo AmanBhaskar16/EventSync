@@ -1,4 +1,4 @@
-// src/types/index.ts
+
 
 // ─── API response wrapper ─────────────────────
 export type ApiResponse<T = unknown> = {

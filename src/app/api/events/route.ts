@@ -8,7 +8,7 @@ import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
 
-export const GET = async () => {
+export async function GET(req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ 
@@ -25,8 +25,23 @@ export const GET = async () => {
       data: [] 
     }, { status: 200 });
 
+    // Check if caller wants only upcoming events (for booking picker)
+    const upcomingOnly = req.nextUrl.searchParams.get("upcoming") === "true";
+
+    const where: Record<string, unknown> = {
+      customerId: (customer as { id: string }).id,
+    };
+
+    // For booking picker — only show events from today onwards
+    if (upcomingOnly) {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      where.eventDate = { gte: todayStart };
+      where.status    = { notIn: ["CANCELLED", "COMPLETED"] };
+    }
+
     const events = await prisma.event.findMany({
-      where:   { customerId: (customer as { id: string }).id },
+      where,
       orderBy: { eventDate: "asc" },
       select: {
         id: true, 
@@ -50,7 +65,6 @@ export const GET = async () => {
       success: true, 
       data: events 
     });
-
   } catch (err) {
     console.error("[GET_EVENTS]", err);
     return NextResponse.json({ 
@@ -60,14 +74,14 @@ export const GET = async () => {
   }
 }
 
-export const POST = async (req: NextRequest) => {
+export async function POST(req: NextRequest) {
   try {
     const session = await auth();
-
     if (!session?.user) return NextResponse.json({ 
       success: false, 
       error: "Unauthenticated." 
     }, { status: 401 });
+
 
     if (session.user.role !== "CUSTOMER") return NextResponse.json({ 
       success: false, 
@@ -103,11 +117,11 @@ export const POST = async (req: NextRequest) => {
       error: "Title is required." 
     },{ status: 400 });
 
-    if (!type) return NextResponse.json({ 
+    if (!type)return NextResponse.json({ 
       success: false, 
       error: "Event type is required." 
     }, { status: 400 });
-
+    
     if (!eventDate) return NextResponse.json({ 
       success: false, 
       error: "Event date is required." 
@@ -116,15 +130,15 @@ export const POST = async (req: NextRequest) => {
     const event = await prisma.event.create({
       data: {
         customerId:  (customer as { id: string }).id,
-        title:       title.trim(),
-        type:        type as "WEDDING"|"BIRTHDAY"|"BACHELORETTE"|"BACHELOR"|"ANNIVERSARY"|"CORPORATE"|"KITTY_PARTY"|"REUNION"|"BABY_SHOWER"|"ENGAGEMENT"|"COCKTAIL_PARTY"|"OTHER",
-        status:      "PLANNING",
-        eventDate:   new Date(eventDate),
-        city:        city?.trim() ?? null,
-        state:       state?.trim() ?? null,
-        venue:       venue?.trim() ?? null,
+        title: title.trim(),
+        type: type as "WEDDING"|"BIRTHDAY"|"BACHELORETTE"|"BACHELOR"|"ANNIVERSARY"|"CORPORATE"|"KITTY_PARTY"|"REUNION"|"BABY_SHOWER"|"ENGAGEMENT"|"COCKTAIL_PARTY"|"OTHER",
+        status: "PLANNING",
+        eventDate: new Date(eventDate),
+        city: city?.trim() ?? null,
+        state: state?.trim() ?? null,
+        venue: venue?.trim() ?? null,
         guestCount:  guestCount ?? null,
-        budget:      budget ?? null,
+        budget: budget ?? null,
         description: description?.trim() ?? null,
       },
     });
@@ -136,9 +150,7 @@ export const POST = async (req: NextRequest) => {
     }, { status: 201 });
 
   } catch (err) {
-
     console.error("[CREATE_EVENT]", err);
-    
     return NextResponse.json({ 
       success: false, 
       error: "Failed to create event." 

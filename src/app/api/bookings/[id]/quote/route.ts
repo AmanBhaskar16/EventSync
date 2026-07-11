@@ -1,16 +1,21 @@
 
+// POST — vendor sends quote | PATCH — customer responds
+
 import { NextRequest, NextResponse } from "next/server";
 import { auth }   from "@/lib/auth";
 import { prisma } from "@/lib/db/prisma";
 
-type LineItem = { 
-  description: string; 
-  quantity: number; 
-  unitPrice: number; 
-  total: number 
+type LineItem = {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
 };
 
-export const POST = async (req: NextRequest,{ params }: { params: Promise<{ id: string }> }) => {
+export const POST = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ 
@@ -22,22 +27,25 @@ export const POST = async (req: NextRequest,{ params }: { params: Promise<{ id: 
 
     const booking = await prisma.booking.findUnique({
       where:  { id: bookingId },
-      select: { id: true, 
+      select: { 
+        id: true, 
         status: true, 
         vendorId: true, 
         vendor: { 
-          select: { userId: true } 
+          select: { 
+            userId: true 
+          } 
         } 
       },
     });
-    if(!booking) return NextResponse.json({ 
+    if (!booking) return NextResponse.json({ 
       success: false, 
       error: "Booking not found." 
     }, { status: 404 });
 
     const b      = booking as Record<string, unknown>;
     const vendor = b.vendor as Record<string, unknown>;
-    if(session.user.id !== vendor.userId){
+    if (session.user.id !== vendor.userId) {
       return NextResponse.json({ 
         success: false, 
         error: "Only the vendor can send quotes." 
@@ -45,7 +53,7 @@ export const POST = async (req: NextRequest,{ params }: { params: Promise<{ id: 
     }
 
     const currentStatus = b.status as string;
-    if(!["INQUIRY", "NEGOTIATION"].includes(currentStatus)){
+    if (!["INQUIRY", "NEGOTIATION"].includes(currentStatus)) {
       return NextResponse.json({ 
         success: false, 
         error: `Cannot send quote when booking is ${currentStatus}.` 
@@ -53,15 +61,11 @@ export const POST = async (req: NextRequest,{ params }: { params: Promise<{ id: 
     }
 
     const body = await req.json() as {
-      lineItems: LineItem[]; 
-      gstRate: number; 
-      validDays: number; 
-      notes?: string; 
-      terms?: string;
+      lineItems: LineItem[]; gstRate: number; validDays: number; notes?: string; terms?: string;
     };
     const { lineItems, gstRate = 18, validDays = 7, notes, terms } = body;
 
-    if(!lineItems?.length){
+    if (!lineItems?.length) {
       return NextResponse.json({ 
         success: false, 
         error: "At least one line item is required." 
@@ -79,24 +83,19 @@ export const POST = async (req: NextRequest,{ params }: { params: Promise<{ id: 
       select:  { version: true },
     });
     const version = ((latestQuote as { version?: number } | null)?.version ?? 0) + 1;
-
-    // Cast lineItems to any to satisfy Prisma Json field — runtime value is correct
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const lineItemsJson = lineItems as any;
-
     const quote = await prisma.quote.create({
       data: {
         bookingId,
-        vendorId: b.vendorId as string,
-        status: "SENT",
-        lineItems: lineItemsJson,
+        vendorId:    b.vendorId as string,
+        status:      "SENT",
+        lineItems:   lineItems as LineItem[], // Cast to satisfy Prisma Json field — runtime value is correct
         subtotal,
         gstRate,
         gstAmount,
         totalAmount,
         validUntil,
-        notes: notes ?? null,
-        terms: terms ?? null,
+        notes:  notes ?? null,
+        terms:  terms ?? null,
         version,
       },
     });
@@ -118,9 +117,12 @@ export const POST = async (req: NextRequest,{ params }: { params: Promise<{ id: 
       error: "Failed to send quote." 
     }, { status: 500 });
   }
-}
+};
 
-export const PATCH = async (req: NextRequest,{ params }: { params: Promise<{ id: string }> }) => {
+export const PATCH = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) => {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ 
@@ -135,103 +137,147 @@ export const PATCH = async (req: NextRequest,{ params }: { params: Promise<{ id:
     const booking = await prisma.booking.findUnique({
       where:  { id: bookingId },
       select: {
-        id: true, 
-        status: true,
+        id: true, status: true,
         event:  { 
           select: { 
             customer: { 
-              select: { userId: true } 
+              select: { 
+                userId: true 
+              } 
             } 
           } 
         },
         vendor: { 
-          select: { userId: true } 
+          select: { 
+            userId: true 
+          } 
         },
       },
     });
-    if(!booking) return NextResponse.json({ 
+    if (!booking) return NextResponse.json({ 
       success: false, 
       error: "Booking not found." 
     }, { status: 404 });
 
-    const b  = booking as Record<string, unknown>;
-    const event  = b.event as Record<string, unknown>;
+    const b = booking as Record<string, unknown>;
+    const event = b.event    as Record<string, unknown>;
     const customer = event.customer as Record<string, unknown>;
-    const vendorR  = b.vendor as Record<string, unknown>;
+    const vendorR  = b.vendor   as Record<string, unknown>;
 
     const isCustomer = session.user.id === customer.userId;
     const isVendor   = session.user.id === vendorR.userId;
     if (!isCustomer && !isVendor) {
       return NextResponse.json({ 
         success: false, 
-        error: "Access denied." 
+        error: "Access denied."
       }, { status: 403 });
     }
 
     const quote = await prisma.quote.findFirst({
       where:   { bookingId, status: "SENT" },
       orderBy: { version: "desc" },
-      select:  { id: true },
+      select:  { 
+        id: true, 
+        totalAmount: true 
+      },
     });
+
     if (!quote) return NextResponse.json({ 
       success: false, 
       error: "No pending quote found." 
     }, { status: 404 });
 
-    const quoteId = (quote as { id: string }).id;
+    const quoteId  = (quote as { 
+      id: string; 
+      totalAmount: number 
+    }).id;
 
+    const total  = (quote as { 
+      id: string; 
+      totalAmount: number }).totalAmount;
+
+    // ── ACCEPT ──────────────────────────────────────────────────────────────
     if (action === "ACCEPT" && isCustomer) {
       await prisma.$transaction(async (tx) => {
-        await tx.quote.update({ where: { 
-          id: quoteId 
-        }, 
-        data: { 
-          status: "ACCEPTED" 
-        } 
-      });
-        await tx.booking.update({ 
-          where: { id: bookingId }, 
-          data: { 
-            status: "CONFIRMED", 
-            confirmedAt: new Date() 
-          } 
+        // 1. Mark quote accepted
+        await tx.quote.update({ 
+          where: { id: quoteId }, 
+          data: { status: "ACCEPTED" } 
         });
+
+        // 2. Confirm booking + set agreedPrice
+        await tx.booking.update({
+          where: { id: bookingId },
+          data:  { 
+            status: "CONFIRMED", 
+            confirmedAt: new Date(), 
+            agreedPrice: total 
+          },
+        });
+
+        // 3. Create 3 payment milestone records
+        const milestones: Array<{ milestone: "BOOKING_CONFIRMATION" | "PRE_EVENT" | "POST_EVENT"; pct: number }> = [
+          { milestone: "BOOKING_CONFIRMATION", pct: 0.30 },
+          { milestone: "PRE_EVENT", pct: 0.40 },
+          { milestone: "POST_EVENT", pct: 0.30 },
+        ];
+        for (const m of milestones) {
+          await tx.payment.create({
+            data: {
+              bookingId,
+              milestone: m.milestone,
+              amount: Math.round(total * m.pct * 100) / 100,
+              status: "PENDING",
+            },
+          });
+        }
       });
+
       return NextResponse.json({ 
         success: true, 
         message: "Quote accepted. Booking confirmed!" 
       });
     }
 
+    // ── REJECT ──────────────────────────────────────────────────────────────
     if (action === "REJECT" && isCustomer) {
       await prisma.quote.update({ 
         where: { id: quoteId }, 
         data: { status: "REJECTED" } 
       });
+
       await prisma.booking.update({ 
         where: { id: bookingId }, 
         data: { status: "INQUIRY" } 
       });
+
       return NextResponse.json({ 
         success: true, 
         message: "Quote rejected." 
       });
     }
 
+    // ── COUNTER ─────────────────────────────────────────────────────────────
     if (action === "COUNTER" && isCustomer) {
       await prisma.quote.update({ 
         where: { id: quoteId }, 
         data: { status: "COUNTER_OFFERED" } 
       });
+
       await prisma.booking.update({ 
         where: { id: bookingId }, 
-        data: { status: "NEGOTIATION" } 
-      });
+        data: { status: "NEGOTIATION" } });
+
       if (message) {
         await prisma.message.create({
-          data: { bookingId, senderId: session.user.id, content: message },
+          data: { 
+            bookingId, 
+            senderId: session.user.id, 
+            content: message 
+          },
         });
       }
+
       return NextResponse.json({ 
         success: true, 
         message: "Counter-offer sent." 
@@ -242,11 +288,13 @@ export const PATCH = async (req: NextRequest,{ params }: { params: Promise<{ id:
       success: false, 
       error: "Invalid action." 
     }, { status: 400 });
+
   } catch (err) {
     console.error("[RESPOND_QUOTE]", err);
+
     return NextResponse.json({ 
       success: false, 
       error: "Failed to respond to quote." 
     }, { status: 500 });
   }
-}
+};

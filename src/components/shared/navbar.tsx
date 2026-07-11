@@ -15,8 +15,13 @@ const ROLE_HOME: Record<string, string> = {
 };
 
 const NAV_LINKS = [
-  { label: "Find Vendors", href: "/vendors" },
-  { label: "About", href: "/about"},
+  { label: "Find Vendors", 
+    href: "/vendors" 
+  },
+  { 
+    label: "About", 
+    href: "/about"
+  },
 ];
 
 export function Navbar() {

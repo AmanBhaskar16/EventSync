@@ -8,10 +8,16 @@ import type { VendorBookingDetail } from "../_queries";
 const QUOTE_BADGE_VARIANT: Record<string, "success" | "destructive" | "warning" | "secondary"> = {
   ACCEPTED: "success",
   REJECTED: "destructive",
-  COUNTER_OFFERED: "warning",
+  COUNTER_OFFERED:"warning",
 };
 
-export const QuoteHistoryCard = ({ quotes, isNegotiating }: { quotes: VendorBookingDetail["quotes"]; isNegotiating: boolean }) => {
+export function QuoteHistoryCard({
+  quotes,
+  isNegotiating,
+}: {
+  quotes: VendorBookingDetail["quotes"];
+  isNegotiating: boolean;
+}) {
   return (
     <Card>
       <CardHeader className="pb-3"><CardTitle className="text-base">Quote History</CardTitle></CardHeader>
@@ -25,14 +31,14 @@ export const QuoteHistoryCard = ({ quotes, isNegotiating }: { quotes: VendorBook
             <div className="flex items-center gap-3">
               <span className="font-semibold">{formatCurrency(q.totalAmount)}</span>
               <Badge variant={QUOTE_BADGE_VARIANT[q.status] ?? "secondary"} className="text-[10px]">
-                {q.status.replace("_", " ")}
+                {q.status.replace(/_/g, " ")}
               </Badge>
             </div>
           </div>
         ))}
         {isNegotiating && (
           <p className="text-xs text-amber-600 font-medium">
-            Customer has counter-offered. Send a new quote to continue negotiation.
+            Customer has counter-offered. Send a new quote to continue.
           </p>
         )}
       </CardContent>

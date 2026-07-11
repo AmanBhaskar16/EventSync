@@ -1,5 +1,4 @@
-// src/lib/validators/index.ts
-//
+
 // Zod schemas for Feature 1 — auth forms only.
 // Used on both client (form validation) and server (API input validation).
 

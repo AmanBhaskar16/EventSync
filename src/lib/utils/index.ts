@@ -1,6 +1,4 @@
-// src/lib/utils/index.ts
-//
-// Utility functions needed for Feature 1.
+
 // cn() — Tailwind class merger (used everywhere)
 // formatCurrency / formatDate — used in dashboards
 

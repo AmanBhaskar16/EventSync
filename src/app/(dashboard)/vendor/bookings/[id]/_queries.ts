@@ -2,7 +2,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { notFound, redirect } from "next/navigation";
 
-export const getVendorBookingDetail = async (id: string, userId: string, userRole: string) => {
+export async function getVendorBookingDetail(id: string, userId: string, userRole: string) {
   const booking = await prisma.booking.findUnique({
     where: { id },
     select: {
@@ -83,19 +83,19 @@ export const getVendorBookingDetail = async (id: string, userId: string, userRol
   }));
 
   return {
-    id: booking.id,
-    status: booking.status,
-    agreedPrice: booking.agreedPrice,
+    id:              booking.id,
+    status:          booking.status,
+    agreedPrice:     booking.agreedPrice,
     specialRequests: booking.specialRequests,
-    guestCount: booking.guestCount,
-    createdAt: booking.createdAt,
-    confirmedAt: booking.confirmedAt,
-    vendor: booking.vendor,
-    event: booking.event,
-    payments: booking.payments,
+    guestCount:      booking.guestCount,
+    createdAt:       booking.createdAt,
+    confirmedAt:     booking.confirmedAt,
+    vendor:          booking.vendor,
+    event:           booking.event,
+    payments:        booking.payments,
     quotes,
-    latestQuote: quotes[0] ?? null,
-    canSendQuote: ["INQUIRY", "NEGOTIATION"].includes(booking.status),
+    latestQuote:    quotes[0] ?? null,
+    canSendQuote:   ["INQUIRY", "NEGOTIATION"].includes(booking.status),
   };
 }
 

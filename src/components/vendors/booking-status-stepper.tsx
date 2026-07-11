@@ -1,19 +1,23 @@
-// src/components/vendors/booking-status-stepper.tsx
 
 import { CheckCircle2, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-  { status: "INQUIRY",     label: "Inquiry Sent",   desc: "Waiting for vendor" },
-  { status: "QUOTE_SENT",  label: "Quote Received", desc: "Review the quote"   },
-  { status: "NEGOTIATION", label: "Negotiation",    desc: "Finalising terms"   },
-  { status: "CONFIRMED",   label: "Confirmed",      desc: "Booking locked in"  },
-  { status: "IN_PROGRESS", label: "Event Day",      desc: "Event is live"      },
-  { status: "COMPLETED",   label: "Completed",      desc: "All done!"          },
+  { status: "INQUIRY", label: "Inquiry Sent", desc: "Waiting for vendor" },
+  { status: "QUOTE_SENT", label: "Quote Received", desc: "Review the quote" },
+  { status: "NEGOTIATION", label: "Negotiation", desc: "Finalising terms" },
+  { status: "CONFIRMED", label: "Confirmed", desc: "Booking locked in" },
+  { status: "IN_PROGRESS", label: "Event Day", desc: "Event is live" },
+  { status: "COMPLETED", label: "Completed", desc: "All done!" },
 ];
 
 const ORDER: Record<string, number> = {
-  INQUIRY:0, QUOTE_SENT:1, NEGOTIATION:2, CONFIRMED:3, IN_PROGRESS:4, COMPLETED:5,
+  INQUIRY:0, 
+  QUOTE_SENT:1, 
+  NEGOTIATION:2, 
+  CONFIRMED:3, 
+  IN_PROGRESS:4, 
+  COMPLETED:5,
 };
 
 export function BookingStatusStepper({ status }: { status: string }) {

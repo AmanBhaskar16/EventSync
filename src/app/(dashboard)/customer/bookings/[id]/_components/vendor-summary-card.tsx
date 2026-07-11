@@ -1,13 +1,13 @@
 
 import Link from "next/link";
+import { CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
 import { StarRating } from "@/components/shared/star-rating";
 import { VENDOR_CATEGORY_LABELS } from "@/lib/utils";
 import type { CustomerBookingDetail } from "../_queries";
 
-export const VendorSummaryCard = ({ vendor }: { vendor: CustomerBookingDetail["vendor"] }) => {
+export function VendorSummaryCard({ vendor }: { vendor: CustomerBookingDetail["vendor"] }) {
   return (
     <Card>
       <CardHeader className="pb-3"><CardTitle className="text-base">Vendor</CardTitle></CardHeader>

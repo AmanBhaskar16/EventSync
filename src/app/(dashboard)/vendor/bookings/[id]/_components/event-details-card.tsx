@@ -3,7 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import type { VendorBookingDetail } from "../_queries";
 
-export const EventDetailsCard = ({ event }: { event: VendorBookingDetail["event"] }) => {
+export function EventDetailsCard({
+  event,
+  agreedPrice,
+}: {
+  event: VendorBookingDetail["event"];
+  agreedPrice: number | null;
+}) {
   const rows = [
     { label: "Date", value: formatDate(event.eventDate) },
     { label: "City", value: event.city ?? "Not specified" },
@@ -22,6 +28,12 @@ export const EventDetailsCard = ({ event }: { event: VendorBookingDetail["event"
             <span className="font-medium text-right">{value}</span>
           </div>
         ))}
+        {agreedPrice && (
+          <div className="flex justify-between pt-2 border-t border-border">
+            <span className="text-muted-foreground">Agreed price</span>
+            <span className="font-bold text-primary">{formatCurrency(agreedPrice)}</span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import type { VendorBookingDetail } from "../_queries";
 
-export const PaymentsCard = ({ payments }: { payments: VendorBookingDetail["payments"] }) => {
+export function PaymentsCard({ payments }: { payments: VendorBookingDetail["payments"] }) {
   if (payments.length === 0) return null;
 
   return (
@@ -17,7 +17,9 @@ export const PaymentsCard = ({ payments }: { payments: VendorBookingDetail["paym
               <p className="text-xs text-muted-foreground">{p.milestone.replace(/_/g, " ")}</p>
               <p className="font-semibold">{formatCurrency(p.amount)}</p>
             </div>
-            <Badge variant={p.status === "PAID" ? "success" : "warning"} className="text-[10px]">{p.status}</Badge>
+            <Badge variant={p.status === "PAID" ? "success" : "warning"} className="text-[10px]">
+              {p.status}
+            </Badge>
           </div>
         ))}
       </CardContent>
