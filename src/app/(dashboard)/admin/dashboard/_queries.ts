@@ -31,12 +31,23 @@ export const getAdminDashboardData = async () =>{
 
     prisma.dispute.findMany({
       where: { status: "OPEN" },
-      include: { booking: { include: { vendor: { select: { businessName: true } } } } },
+      include: { 
+        booking: { 
+          include: { 
+            vendor: { 
+              select: { businessName: true } 
+            } 
+          } 
+        } 
+      },
       orderBy: { createdAt: "desc" },
       take: 5,
     }),
 
-    prisma.payment.aggregate({ where: { status: "PAID" }, _sum: { amount: true } }),
+    prisma.payment.aggregate({ 
+      where: { status: "PAID" }, 
+      _sum: { amount: true } 
+    }),
   ]);
 
   return {
