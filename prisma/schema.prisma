@@ -248,6 +248,7 @@ model Booking {
   agreedPrice     Float?
   platformFee     Float?
   vendorPayout    Float?
+  commissionRate  Float? 
   specialRequests String?
   guestCount      Int?
   startTime       DateTime?
