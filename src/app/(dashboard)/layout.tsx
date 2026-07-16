@@ -28,6 +28,7 @@ const NAV = {
     { label: "Bookings",   href: "/vendor/bookings",   icon: CalendarDays    },
     { label: "Inventory",  href: "/vendor/inventory",  icon: Package         },
     { label: "Staff",      href: "/vendor/staff",      icon: Users           },
+    { label: "Services",   href: "/vendor/services",   icon: Package         },
     { label: "Documents",  href: "/vendor/documents",  icon: FileText        },
     { label: "Finances",   href: "/vendor/finances",   icon: BarChart3       },
   ],
