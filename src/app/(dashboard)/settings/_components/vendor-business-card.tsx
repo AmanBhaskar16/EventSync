@@ -95,3 +95,4 @@ export const VendorBusinessCard = ({ userData, isSaving, onSave }: {
     </Card>
   );
 }
+

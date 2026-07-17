@@ -1,10 +1,9 @@
-
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { UserData } from "../_types";
 
-export function VendorStatsCard({ vendor }: { vendor: NonNullable<UserData["vendor"]> }) {
+export const VendorStatsCard = ({ vendor }: { vendor: NonNullable<UserData["vendor"]> }) => {
   const stats = [
     { label: "Avg Rating", 
       value: vendor.avgRating > 0 ? `${vendor.avgRating.toFixed(1)} ★` : "—" 

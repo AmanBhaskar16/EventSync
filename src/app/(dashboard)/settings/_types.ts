@@ -4,6 +4,7 @@ export type UserData = {
   name: string | null;
   email: string;
   phone: string | null;
+  avatar: string | null;
   role: string;
   createdAt: string;
   vendor?: {
@@ -24,6 +25,8 @@ export type UserData = {
     avgRating: number; 
     totalReviews: number; 
     totalBookings: number;
+    portfolioImages: string[]; 
+    kycDocuments: string[];
   } | null;
   customer?: {
     address: string | null; 

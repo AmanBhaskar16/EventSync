@@ -50,3 +50,4 @@ export const VendorBankCard = ({ userData, isSaving, onSave }: {
     </Card>
   );
 }
+

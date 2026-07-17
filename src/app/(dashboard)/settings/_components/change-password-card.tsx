@@ -17,24 +17,22 @@ export const ChangePasswordCard = ({ isSaving, onSave }: { isSaving: boolean; on
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     if (form.newPassword !== form.confirmPassword) { 
-      toast.error("New passwords do not match."); 
+      toast.error("Passwords do not match."); 
       return; 
     }
 
-    if (form.newPassword.length < 8){ 
-      toast.error("Password must be at least 8 characters."); 
+    if (form.newPassword.length < 8) { 
+      toast.error("Min 8 characters."); 
       return; 
     }
+
     await onSave("password", { 
       currentPassword: form.currentPassword, 
       newPassword: form.newPassword 
     });
     setForm(INITIAL);
   }
-
-  const canSubmit = form.currentPassword && form.newPassword && form.confirmPassword;
 
   return (
     <Card>
@@ -56,13 +54,14 @@ export const ChangePasswordCard = ({ isSaving, onSave }: { isSaving: boolean; on
                 value={form.newPassword}
                 onChange={(e) => setForm((f) => ({ ...f, newPassword: e.target.value }))} />
             </FormField>
-            <FormField label="Confirm new password" htmlFor="cnpwd">
+            <FormField label="Confirm password" htmlFor="cnpwd">
               <Input id="cnpwd" type="password" placeholder="••••••••"
                 value={form.confirmPassword}
                 onChange={(e) => setForm((f) => ({ ...f, confirmPassword: e.target.value }))} />
             </FormField>
           </div>
-          <Button type="submit" size="sm" loading={isSaving} disabled={!canSubmit}>
+          <Button type="submit" size="sm" loading={isSaving}
+            disabled={!form.currentPassword || !form.newPassword || !form.confirmPassword}>
             <Lock className="size-4" /> Update password
           </Button>
         </form>

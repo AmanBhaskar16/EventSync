@@ -188,6 +188,7 @@ model Vendor {
   totalBookings    Int            @default(0)
   responseTime     Int            @default(24)
   portfolioImages  String[]       @default([])
+  kycDocuments     String[]       @default([]) 
   bankAccountNo    String?
   bankIfsc         String?
   bankName         String?
