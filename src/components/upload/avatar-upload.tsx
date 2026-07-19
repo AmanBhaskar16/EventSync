@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Camera, Loader2 }  from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { url } from "inspector/promises";
 
 type Props = {
   currentAvatar: string | null;
@@ -25,7 +27,7 @@ export const AvatarUpload = ({ currentAvatar, name, size = "md" }: Props) => {
   const [preview, setPreview]  = useState<string | null>(currentAvatar);
   const [loading, setLoading]  = useState(false);
   const s = SIZE_MAP[size];
-
+  const { update } = useSession();
   const initials = (name ?? "U").split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -54,6 +56,7 @@ export const AvatarUpload = ({ currentAvatar, name, size = "md" }: Props) => {
         return;
       }
       toast.success("Profile photo updated!");
+      await update({ avatar: url });
       router.refresh();
     } catch {
       toast.error("Network error.");

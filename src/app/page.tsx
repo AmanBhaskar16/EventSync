@@ -1,50 +1,50 @@
-// src/app/page.tsx
-// URL: /
+
 // Landing page — hero, features, event types, role cards, CTA.
 
-import Link                 from "next/link";
+import Link from "next/link";
 import {
-  CalendarCheck, ArrowRight, Sparkles,
-  Users, BarChart3, Shield, Package, FileText, CheckCircle,
+  CalendarCheck, ArrowRight, 
+  Users, Shield, FileText, CheckCircle,MessageSquare, CreditCard,
+  User
 } from "lucide-react";
-import { Button }           from "@/components/ui/button";
-import { Badge }            from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const FEATURES = [
   {
     icon:  CalendarCheck,
-    title: "Visual Event Builder",
-    desc:  "Drag-and-drop timeline to design every detail with live budget tracking.",
+    title: "Event & Booking Management",
+    desc:  "Create events, discover verified vendors, send inquiries and manage your entire booking lifecycle in one place.",
     color: "bg-primary/10 text-primary",
   },
   {
     icon:  Users,
     title: "Verified Vendor Network",
-    desc:  "2,400+ KYC-verified vendors across 17 categories.",
+    desc:  "Browse KYC-verified vendors across 17 categories — catering, decor, photography and more.",
     color: "bg-blue-100 text-blue-700",
   },
   {
-    icon:  Package,
-    title: "Fractional Inventory",
-    desc:  "Book exactly what you need — our engine prevents double-bookings.",
+    icon:  CreditCard,
+    title: "Milestone Payments",
+    desc:  "3-stage payment schedule (30/40/30%) via Stripe with sequential unlocking and server-side verification.",
     color: "bg-green-100 text-green-700",
   },
   {
-    icon:  BarChart3,
-    title: "Business Intelligence",
-    desc:  "Real-time revenue, net profit per event, staff and expense breakdowns.",
+    icon:  MessageSquare,
+    title: "Real-time Messaging",
+    desc:  "Instant chat between customers and vendors with typing indicators and Socket.io powered live notifications.",
     color: "bg-amber-100 text-amber-700",
   },
   {
     icon:  FileText,
-    title: "GST Document Engine",
-    desc:  "Auto-generate GST-compliant invoices, quotations, and service agreements.",
+    title: "GST Invoice Engine",
+    desc:  "Auto-generate GST-compliant PDF invoices with line items, tax breakdown and instant download support.",
     color: "bg-purple-100 text-purple-700",
   },
   {
     icon:  Shield,
-    title: "Escrow Payments",
-    desc:  "Split milestone payments with secure escrow protection.",
+    title: "Admin Control Panel",
+    desc:  "Platform-wide analytics, KYC review queue, dispute resolution and vendor payout management with commission tracking.",
     color: "bg-rose-100 text-rose-700",
   },
 ];
@@ -54,6 +54,51 @@ const EVENT_TYPES = [
   "🎊 Engagement", "💼 Corporate", "🌸 Baby Shower",
   "🍵 Kitty Party", "🤝 Reunion", "🎤 Cocktail Party",
   "🎉 Anniversary", "🎓 Graduation", "✨ Any Event",
+];
+
+const ROLES_DETAILS = [
+  {
+    emoji: User, 
+    role: "Customer",
+    headline: "Plan events that wow",
+    points: [
+      "Visual Event Builder with timeline",
+      "Browse & compare 2,400+ vendors",
+      "Quote negotiation & milestone payments",
+      "Real-time event tracker",
+    ],
+    href: "/register",
+    cta:  "Start planning",
+    cls:  "border-primary/30 bg-primary/5",
+  },
+  {
+    emoji: Users, 
+    role: "Vendor",
+    headline: "Run your entire operation",
+    points: [
+      "Smart booking pipeline (CRM-style)",
+      "Fractional inventory management",
+      "Staff assignment & scheduling",
+      "GST invoice generation",
+    ],
+    href: "/register?role=VENDOR",
+    cta:  "List your business",
+    cls:  "border-blue-200 bg-blue-50",
+  },
+  {
+    emoji: Shield, 
+    role: "Admin",
+    headline: "Manage the ecosystem",
+    points: [
+      "Vendor KYC review & verification",
+      "Platform-wide revenue analytics",
+      "Commission & payout management",
+      "Dispute resolution centre",
+    ],
+    href: "/about",
+    cta:  "Learn more",
+    cls:  "border-amber-200 bg-amber-50",
+  },
 ];
 
 export default function HomePage() {
@@ -111,9 +156,8 @@ export default function HomePage() {
         </div>
 
         <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
-          <Badge variant="secondary" className="mb-6 gap-1.5 px-3 py-1.5">
-            <Sparkles className="size-3 text-primary" />
-            Built for India&apos;s event industry
+          <Badge variant="outline" className="mb-6 gap-2 px-4 py-1.5 text-xs font-medium tracking-wide uppercase border-primary/30 text-primary/80">
+            🇮🇳 Built for India&apos;s event industry
           </Badge>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight mb-6">
@@ -184,7 +228,7 @@ export default function HomePage() {
       <section className="py-16 sm:py-24 bg-muted/20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 space-y-3">
-            <Badge variant="outline">Platform features</Badge>
+            <Badge variant="outline">Platform&apos;s popular features</Badge>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
               Everything in one workspace
             </h2>
@@ -216,50 +260,10 @@ export default function HomePage() {
             </h2>
           </div>
           <div className="grid lg:grid-cols-3 gap-6">
-            {[
-              {
-                emoji: "🎉", role: "Customer",
-                headline: "Plan events that wow",
-                points: [
-                  "Visual Event Builder with timeline",
-                  "Browse & compare 2,400+ vendors",
-                  "Quote negotiation & milestone payments",
-                  "Real-time event tracker",
-                ],
-                href: "/register",
-                cta:  "Start planning",
-                cls:  "border-primary/30 bg-primary/5",
-              },
-              {
-                emoji: "🏢", role: "Vendor",
-                headline: "Run your entire operation",
-                points: [
-                  "Smart booking pipeline (CRM-style)",
-                  "Fractional inventory management",
-                  "Staff assignment & scheduling",
-                  "GST invoice generation",
-                ],
-                href: "/register?role=VENDOR",
-                cta:  "List your business",
-                cls:  "border-blue-200 bg-blue-50",
-              },
-              {
-                emoji: "⚙️", role: "Admin",
-                headline: "Manage the ecosystem",
-                points: [
-                  "Vendor KYC review & verification",
-                  "Platform-wide revenue analytics",
-                  "Commission & payout management",
-                  "Dispute resolution centre",
-                ],
-                href: "/about",
-                cta:  "Learn more",
-                cls:  "border-amber-200 bg-amber-50",
-              },
-            ].map((r) => (
+            {ROLES_DETAILS.map((r) => (
               <div key={r.role} className={`rounded-2xl border-2 p-6 space-y-5 ${r.cls}`}>
                 <div className="flex items-center justify-between">
-                  <span className="text-3xl">{r.emoji}</span>
+                  <span className="text-3xl">{typeof r.emoji === 'string' ? r.emoji : <r.emoji className="size-6" />}</span>
                   <Badge variant="outline" className="text-xs">{r.role}</Badge>
                 </div>
                 <h3 className="text-lg font-bold">{r.headline}</h3>

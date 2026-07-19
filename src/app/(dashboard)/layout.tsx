@@ -14,7 +14,8 @@ import {
   Users, Package, FileText, CreditCard, BarChart3,
   Shield, UserCheck, AlertCircle, Settings, LogOut,
 } from "lucide-react";
-
+import {NotificationBell} from "@/components/shared/notification-bell";
+import Image from "next/image";
 // Nav items per role
 const NAV = {
   CUSTOMER: [
@@ -61,6 +62,8 @@ export default async function DashboardLayout({
     .join("")
     .toUpperCase()
     .slice(0, 2);
+
+  const avatar = session.user.avatar ?? session.user.image ?? null;
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -116,8 +119,14 @@ export default async function DashboardLayout({
 
           {/* User chip */}
           <div className="mt-2 flex items-center gap-3 rounded-lg bg-sidebar-accent px-3 py-2">
-            <div className="size-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-sidebar-primary shrink-0">
-              {initials}
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <div className="size-8 rounded-full overflow-hidden shrink-0 bg-primary/20 flex items-center justify-center">
+                {avatar
+                  ? <Image src={avatar} alt={"avatar"} width={32} height={32} className="h-full w-full object-cover" />
+                  : <span className="text-xs font-bold text-sidebar-primary">{initials}</span>
+                }
+              </div>
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-sidebar-foreground truncate">
@@ -143,8 +152,11 @@ export default async function DashboardLayout({
             </div>
             <span className="font-bold text-sm">EventSync</span>
           </Link>
-          <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
-            {initials}
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+              {initials}
+            </div>
           </div>
         </header>
 

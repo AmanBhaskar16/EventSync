@@ -449,3 +449,17 @@ model StaffAssignment {
 
   @@map("staff_assignments")
 }
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+ 
+  @@index([userId, isRead])
+  @@map("notifications")
+}
