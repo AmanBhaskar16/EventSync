@@ -10,7 +10,14 @@ export const RecentBookingsCard = ({ bookings }: { bookings: AnalyticsData["rece
       <CardHeader className="pb-3"><CardTitle className="text-base">Recent Bookings</CardTitle></CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {bookings.map((b) => (
+          {bookings.map((b:{
+              id: string;
+              status: string;
+              agreedPrice: number | null;
+              createdAt: Date;
+              vendor: { businessName: string };
+              event: { title: string; eventDate: Date };
+            }) => (
             <div key={b.id} className="flex items-center justify-between rounded-lg border border-border p-3">
               <div className="min-w-0">
                 <p className="font-medium text-sm truncate">{b.vendor.businessName}</p>
