@@ -1,9 +1,10 @@
-import Link from "next/link";
-import { SearchX } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/shared/navbar";
 
-export default function VendorNotFound() {
+import Link        from "next/link";
+import { SearchX } from "lucide-react";
+import { Button }  from "@/components/ui/button";
+import { Navbar }  from "@/components/shared/navbar";
+
+const VendorNotFound = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -25,3 +26,5 @@ export default function VendorNotFound() {
     </div>
   );
 }
+
+export default VendorNotFound;
