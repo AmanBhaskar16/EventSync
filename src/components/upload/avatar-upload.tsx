@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Camera, Loader2 }  from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import { url } from "inspector/promises";
 
 type Props = {
   currentAvatar: string | null;
@@ -55,8 +54,9 @@ export const AvatarUpload = ({ currentAvatar, name, size = "md" }: Props) => {
         setPreview(currentAvatar);
         return;
       }
+      const uploadedUrl = data.data?.url;
       toast.success("Profile photo updated!");
-      await update({ avatar: url });
+      await update({ avatar: uploadedUrl });
       router.refresh();
     } catch {
       toast.error("Network error.");
